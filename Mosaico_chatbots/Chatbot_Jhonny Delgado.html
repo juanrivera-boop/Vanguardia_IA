@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot:  JHONNY Tecnicas_Ancestrales_Construccion</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';</script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { processHtmlClass: "tex2jax_process", ignoreHtmlClass: "tex2jax_ignore" }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://unpkg.com/docx@7.3.0/build/index.js"></script>
+    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <style>
+        :root{--primary:#007bff;--secondary:#6c757d;--light:#f8f9fa;--dark:#343a40;--success:#28a745;--danger:#dc3545;--warning:orange;--radius:8px;--font:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;--bg:var(--light);--text:var(--dark);--card:#fff;--border:#ddd;--input:#fff;--iborder:#ccc;--bot-bg:#e9ecef;--bot-text:var(--dark);--user-bg:var(--primary);--user-text:#fff;--sys-bg:#fff3cd;--sys-text:#856404;}
+        body.dark-mode{--bg:#212529;--text:#f8f9fa;--card:#343a40;--border:#495057;--input:#495057;--iborder:#6c757d;--bot-bg:#495057;--bot-text:#f8f9fa;--sys-bg:#332701;--sys-text:#ffeb8f;}
+        body{font-family:var(--font);margin:0;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100vh;transition:background .3s,color .3s;}
+        .container{width:90%;max-width:800px;margin:20px auto;padding:20px;background:var(--card);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.1);flex-grow:1;display:flex;flex-direction:column;gap:15px;}
+        header{text-align:center;border-bottom:1px solid var(--border);padding-bottom:15px;}
+        header h1{color:var(--primary);margin:0;font-size:1.6em;}
+        header p{margin:5px 0 0;font-size:.9em;color:var(--secondary);}
+        .toolbar{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;}
+        button{background:var(--primary);color:#fff;border:none;padding:8px 15px;border-radius:var(--radius);cursor:pointer;font-size:.9em;transition:background .2s;}
+        button:hover{background:#0056b3;}
+        button:disabled{background:var(--secondary)!important;opacity:.65;cursor:not-allowed;}
+        #theme-btn{background:var(--secondary);}
+        #palette-btn{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;}
+        .toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+        .btn-export{background:var(--primary);color:#fff;border:none;padding:8px 14px;border-radius:var(--radius);cursor:pointer;font-size:.85em;transition:background .2s;}
+        .btn-export:hover{background:#0056b3;}
+        .pdf2-section{padding:10px;border:1px dashed var(--border);border-radius:var(--radius);}
+        .pdf2-section label.title{font-size:.85em;font-weight:bold;display:block;margin-bottom:6px;color:var(--secondary);}
+        .file-row{display:flex;align-items:center;gap:10px;}
+        .file-row input[type=file]{display:none;}
+        .file-label{background:var(--secondary);color:#fff;padding:6px 12px;border-radius:var(--radius);cursor:pointer;font-size:.85em;}
+        .file-label:hover{background:#545b62;}
+        #pdf2-name{font-style:italic;color:var(--secondary);font-size:.85em;}
+        #pdf2-status{font-size:.85em;margin-top:4px;font-weight:bold;}
+        .suggested-questions-row{display:flex;flex-direction:column;gap:6px;}
+        .sq-label{font-size:.85em;font-weight:600;color:var(--secondary);}
+        .questions-select{width:100%;padding:8px;border:1px solid var(--iborder);border-radius:var(--radius);background:var(--input);color:var(--text);font-size:.9em;}
+        .chat-display{height:360px;overflow-y:auto;border:1px solid var(--iborder);border-radius:var(--radius);padding:10px;background:var(--bg);line-height:1.6;}
+        .chat-display .user-message,.chat-display .bot-message,.chat-display .system-message{margin-bottom:10px;word-wrap:break-word;}
+        .chat-display .user-message,.chat-display .bot-message{background:transparent;color:inherit;padding:0;border-radius:0;max-width:100%;text-align:inherit;margin-left:0;}
+        .message{display:flex;align-items:flex-end;gap:10px;margin-bottom:4px;max-width:100%;}
+        .message.user-message{flex-direction:row-reverse;justify-content:flex-start;}
+        .avatar-img{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid #eee;background-color:#f0f0f0;}
+        body.dark-mode .avatar-img{border-color:#444;background-color:#555;}
+        .message-bubble{padding:10px 15px;border-radius:18px;max-width:85%;word-wrap:break-word;line-height:1.5;display:flex;flex-direction:column;}
+        .user-message .message-bubble.user-bubble{background:var(--user-bg);color:var(--user-text);border-bottom-right-radius:5px;margin-left:auto;}
+        .bot-message .message-bubble.bot-bubble{background:var(--bot-bg);color:var(--bot-text);border-bottom-left-radius:5px;margin-right:auto;}
+        .chat-display .message-bubble strong{color:var(--primary);font-size:.9em;}
+        .chat-display .bot-message .message-bubble p{margin:0 0 8px;}.chat-display .bot-message .message-bubble p:last-child{margin:0;}
+        .chat-display .bot-message .message-bubble pre{background:var(--dark);color:var(--light);padding:10px;border-radius:5px;overflow-x:auto;}
+        .chat-display .bot-message .message-bubble code{background:rgba(0,0,0,.1);padding:2px 4px;border-radius:3px;}
+        body.dark-mode .chat-display .bot-message .message-bubble code{background:rgba(255,255,255,.1);}
+        .chat-display .system-message{background:var(--sys-bg);color:var(--sys-text);text-align:center;font-style:italic;font-size:.9em;padding:8px 12px;border-radius:var(--radius);}
+        .chat-display .system-message.error{background:#f8d7da;color:#721c24;}
+        .thinking-animation{opacity:.75;animation:pulseThink 1s ease-in-out infinite;}
+        @keyframes pulseThink{50%{opacity:1}}
+        .input-area{display:flex;gap:10px;}
+        #question-input{flex-grow:1;padding:10px;border:1px solid var(--iborder);border-radius:var(--radius);font-size:1em;resize:none;background:var(--input);color:var(--text);}
+        #send-button{background:var(--success);padding:0 20px;display:flex;align-items:center;justify-content:center;gap:8px;}
+        #send-button:hover{background:#1e7e34;}
+        .loader{border:3px solid #f3f3f3;border-top:3px solid var(--primary);border-radius:50%;width:16px;height:16px;animation:spin 1s linear infinite;display:none;}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        footer{text-align:center;padding:12px;background:var(--dark);color:var(--light);font-size:.8em;margin-top:20px;}
+        @media(max-width:600px){.input-area{flex-direction:column;}#send-button{width:100%;padding:12px;}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Chatbot PDF Interactivo</h1>
+        <p> JHONNY Tecnicas_Ancestrales_Construccion</p>
+    </header>
+    <div class="toolbar">
+        <div class="toolbar-actions">
+            <button type="button" id="download-html-session-btn" class="btn-export">📥 Descargar HTML</button>
+            <button type="button" id="download-word-session-btn" class="btn-export">📥 Descargar Word</button>
+            <button type="button" id="theme-btn">🌓 Tema</button>
+            <button type="button" id="palette-btn">🎨 Paleta de colores</button>
+        </div>
+    </div>
+    <div class="pdf2-section">
+        <label class="title">📎 Segundo PDF (opcional)</label>
+        <div class="file-row">
+            <label for="pdf2-upload" class="file-label">+ Seleccionar PDF</label>
+            <input type="file" id="pdf2-upload" accept=".pdf">
+            <span id="pdf2-name">Ningún archivo seleccionado</span>
+        </div>
+        <div id="pdf2-status"></div>
+    </div>
+    <div class="suggested-questions-row">
+        <label for="questions-selector" class="sq-label">Preguntas sugeridas</label>
+        <select id="questions-selector" class="questions-select" title="Elegir una pregunta propuesta">
+            <option value="">— Elige una pregunta —</option>
+        </select>
+    </div>
+    <div id="chat-display" class="chat-display"></div>
+    <div class="input-area">
+        <textarea id="question-input" rows="2" placeholder="Escribe tu pregunta aquí..."></textarea>
+        <button id="send-button">
+            <span id="send-button-text">Enviar</span>
+            <div class="loader" id="loading-spinner"></div>
+        </button>
+    </div>
+</div>
+<footer><p>Diseñado por Juan Guillermo Rivera Berrío con tecnología Gemini 3.1 Pro y la IA agéntica Antigravity</p></footer>
+<script>
+    const PDF_TEXT = "      TÉCNICAS ANCESTRALES DE CONSTRUCCIÓN           JULIÁN ESTEBAN LÓPEZ CORREA    JULIÁN DAVID MARTINEZ MONTOYA     DIEGO LEÓN VELASQUEZ PORRAS          UNIVERSIDAD DE SAN BUENAVENTURA SECCIONAL MEDELLÍN    FACULTAD DE  ARTES INTEGRADAS                         ARQUITECTURA    MEDELLIN    201 4   \n      Proyecto   presentad o   para optar al título  arquitecto        Asesor    Luis Javier Sierra A rango    Arquitecto                          UNIVERSIDAD DE SAN BUENAVENTURA SECCIONAL MEDELLÍN    FACULTAD DE  ARTESINTEGRADAS    ARQUITECTURA             MEDELLIN    201 4   \n            CONTENIDO       1. JUSTIFICACIÓN   ................................ ................................ ................................ ..   4    2. PLANTEAMIENTO DEL PROBLEMA   ................................ ................................ ..   5    3. OBJETIVO GENERAL   ................................ ................................ .........................   6    4.  OBJETIVOS ESPECÍFICOS   ................................ ................................ ................   6    5. MARCO REFERENCIAL ................................ ................................ ......................   7    5.1  m ateriales .......................................................... 1 8    5.2  recolección de materiales ..............................  1 4    5.3  corte ................................................................................... 15    5.4 Métodos     ................................................................................16    5.5  métodos   de construcción ......................................................18    5.6construccion .........................................................................25    6. DISEÑO METODÓLOGICO PRELIMINAR   ................................ ........................   29    7.  PROPUESTA DE VIVIENDA   ................................ ................................ .............   33    9. CONCLUSIONES   ................................ ................................ ..............................   35    10.  REFERENCIAS BIBLIOGRAFICAS   ................................ ................................ .   36    LISTA DE TABLAS   ................................ ................................ ................................   37    LISTA DE FIGURAS   ................................ ................................ ..............................   37   \n4       1. JUSTIFICACIÓN       Los  procesos  que    hoy  en  día  se  le  conocen  como  artesanales  anteriormente  en   las  culturas  prehispánicas  eran  los  pilares  de  la  construcción  de  vivienda  ya  que   los materiales en piedra eran para sus templos y sitios de adoración. De tal forma   que estas técn icas  aseguran un buen  uso de la tierra.      En  Colombia  hay  regiones  en  las  que  se  han  aplicado  técnicas  constructivas  de   carácter sostenible que aprovechan los recursos que le genera su propio entorno.   Estas técnicas han sido  transferidas de generación e n generación hasta nuestros   días,  pero  con  la  modernización  de  los  métodos  constructivos  y  una  población   cada  ves  mas  creciente,  estos  métodos  se  han  ido  perdiendo  y  quedando  en  el   olvido.  De  manera  que  lo  que  pretendemos  es  darle  un  plus  a  estos  métodos   c onstructivos  ancestrales  desde  lo  técnico  y  lo  innovador  para  formalizarlo   presentarlo como una técnica constructiva viable.    Sabemos que estos métodos ancestrales pueden servir  para la construcción  de   proyectos  sostenibles  que  mejoren  la  calidad  de  vida    del  ser  humano  así  como   también  no  tengan  un  efecto  negativo  al  medio  ambiente.  En  la  actualidad    los   nuevos  materiales,  que  tienen  los  estándares  de  más  alta  calidad  y  sismo   resistencia  tiene  una desventaja,  y  es  en  su  marcha  de  producción,  ya  que  pasa   po r  unos  procesos  que  tienen  un  impacto  negativo  en  el  medio  ambiente  y  son   poco o nada sostenibles.     Las  técnicas  ancestrales  de  construcción  nos  podrá  ayudar    a  la  creación  de     viviendas  que tengan un buen uso del entorno así como poder reducir el costo  de   materiales  puesto que el traslado de ellos aumenta su valor ,  se podría utilizar  la   misma tierra del lugar  para  ahorrar tiempo, usando  ciertos  procesos  y mezclas    se  pueden  utilizar  en  la  elaboración  de    vivienda  de  hasta  2  niveles  a  su  vez   adec uarlas  con    lo  que    se  necesita  para    el  hogar    todo  esto  cumpliendo  con  la   NSR - 10.           \n5       2 .  PLANTEAMIENTO DEL PROBLEMA       Hemos  dado  cuenta  de  que  no  es  posible    crear  sin  destruir  el  medio  ambiente,   pero se puede mitigar ese impacto con técnicas y materiales  constructivos que no   afecten tanto al medio ambiente.       Entre dicho esto hemos encontrado que los procesos  constructivos  utilizados  de   manera  ancestral  no  perjudicaban  mucho  al  medio  ambiente,  ya  que  sus   materiales son locales y que los constructores uti lizan a la perfección ,ya que sus    ancestro  le has transferido  las  técnicas  para  realizar  obras,  pero,  como podemos   recuperar      esa  técnicas  que  se  han  estado  perdiendo  pro  el  uso  de  nuevas   tecnologías, el gasto de materiales y las normas de construcción.           \n6       3.  OBJETIVO GENERAL       Recuperar métodos ancestrales de construcción,  reincorporando  técnicas que se   han  estado    perdiendo  y  que  pueden  servir  para    el  desarrollo  de  la  arquitectura   sostenible  y    dar  una  solución  efectiva  y  practica  para  construcciones  de  bajo   presupuesto  en  l ugares  donde  se  puede  aprovechar  los  mismos  recursos   naturales  que  posee  y  donde  es  muy  complicado  llevar    materiales    en  gran   volumen.              4.  OBJETIVOS ESPECÍFICOS          Indagar sobre la arquitectura renovable, y las técnicas de construcción           Analizar que método de construcción es aplicable según la región y el clima           Demostrar que los sistemas ancestrales de construcción son buenos y   sirven para la  construcción de  viviendas de hasta 2nveles                  \n7       5.  MARCO REFERENCIAL       La arquitectura y cons trucción actuales no sólo buscan innovar en el diseño, sino   también  en  el   uso  de  materiales  de  construcción  no  convencionales .  Es  por   eso  que  en  los  últimos  tiempos,  han  comenzado  a  utilizarse,  en  forma   experimental  en  algunos  casos,   materiales  no  convenci onales  y/o  reciclados   para  la  construcción  de  viviendas .  Cuando  el  material  utilizado  es  reciclado  o   podría reutilizarse, se habla de   materiales de construcción sostenibles .     ¿Cómo deben ser los materiales sustentables?    El que un material de construcción  sea considerado sustentable depende tanto de   su  obtención,  como  del  transporte  que  requiera  su  traslado.  Por  eso,  cada  vez   más, se privilegia el   uso de materiales de la zona en que se construirá , que no   requieran  largos  traslados.  También  es  necesario  que    sea  un  material  de  larga   duración, no contaminante, que sea un recurso renovable, autóctono y, en caso de   ser  fabricado  industrialmente,  que  consuma  poca  energía  para  su  fabricación  e   incluya material reciclado en su composición.         Impacto ambiental de los   materiales de construcción    El mayor problema que ha generado la construcción moderna es que la obtención   de  materiales  ha  producido  un  alto  impacto  negativo  en  el  medioambiente.  Para   determinar  el  impacto  ambiental  que  produce  la  obtención  o  fabricación  d e  un   material de construcción, se tienen en cuenta las siguientes características:            El   consumo  energético   necesario  para  su  fabricación,  tanto  como  el  consumo   energético  del  material  a  lo  largo  de  su  vida  útil  (esto  es,  el  comportamiento   térmico del mater ial como aislante). Este es un tema en el que hay que hacer un   cuidado balance, ya que materiales como el plástico, que consume mucha energía   para su fabricación, es derivado del petróleo y no es degradable, provee, a la vez,   una gran aislación.       Si  se  trat a  de  un  recurso  natural,  es  necesario  tener  en  cuenta  el   impacto   ambiental  de  su  obtención ,  en  tanto  puede  producirse  la  desaparición  de  la   especie, o el desequilibrio de su ecosistema. También se tiene en cuenta que se   trate  de  un  recurso  renovable,  como  la  madera,  siempre  que  su  tala  sea   responsable (reemplazar cada árbol talado con uno plantado).       La  producción  de  algunos  materiales,  como el  PVC,  genera  una  alarmantemente   alta  cantidad  de  CO2,  que  destruye  la  capa  de  ozono.  Materiales  como  éste,  y  \n8       otros q ue antes se utilizaban habitualmente en la construcción, están cayendo en   desuso.       También se debe tener en cuenta qué sucede con un material cuando termina su   vida útil.  Algunos materiales pueden reutilizarse o reciclarse . Otros no. En ese   caso, es importa nte que se degraden rápida y fácilmente, sin contaminar la tierra o   el agua.       Durante  la  construcción,  algunos  materiales  generan  más  residuos  que  otros,  o   utilizan  más  agua  que  otros.  Esta  es  otra  de  las  características  a  tener  en   cuenta   para determinar si   un material de construcción es sustentable.       5.1  M ateriales       Mucho  se  dice  de  las  técnicas  de  la  guadua  el  bareque  y  la  tapia,  forma  de   construcción que ha estado desde los inicios de la civilización saber que contiene   como se procesa y se realiza dicho  elemento para la elaboración de material para   el  uso  de  la  arquitectura    y  la  recuperación  de  un  patrimonio  que  se  ha  ido   olvidado  do  debido  al  uso  de  la  tecnología  los  materiales  con  mayor  duración  y   resistencia,  que  ,  han  opacado  los  materiales  y  las  téc nicas  que    en  gran  parte    transformaron a el hombre de vivir en una caverna alejado de otros homo sapiens   a crear espacios de barro, fibra vegetal y de árboles  en ciudades y lugares en el   que él se inició la comunidad.    5.1.1  Bahareque      Bahareque,  o    bajareque,  es  la  denominación  de  un  sistema  de  construcción  de   viviendas  a  partir  de  palos  o  cañas  entretejidos  y  barro.  Esta  técnica  ha  sido   utilizada  desde  épocas  remotas  para  la  construcción  de  vivienda  en  pueblos   indígenas  de  américa.  Un  ejemplo  es  el  bohío,  vivienda  muy  usada  por   amerindios,  principalmente  en  Colombia  y  Venezuela.  En  algunos  países  de   américa del sur se la denomina como bareque.       “Define la palabra bahareque Pedro José Ramírez   Sendoya  como  buenos  edificios  de  paredes  de   barro y madera  casi del ancho de una tapia de las  \n9       nuestras,  altas  y  blanqueadas  de  greda  muy    blanca”.     “Pedro  Simón  casa  o  lugar  de  habitación   construidos  de  cañas  tejidas  y  barro.  Algunos   autores  la  consideran  de  origen  caribe - taina   escribiéndola bajareque”.       En  otras    lenguas americanas encontramos homofonías: mizteca “ba”; mapuche,   “bahí”; galibi “bava”.       El  bahareque  es  característico  de  américa,  dentro  de  los  tipos  está  el  embutido,   esterilla y el tejido. las comunidades caribes del interior de Colombia y Venezuela   a     sus  lugares  de  habitación  construidos  con  materiales  naturales  como  pilotes   estructurales  de  madera;  con  cubiertas  protectoras  a  dos  aguas,  elaboradas  con   las  hojas  de  la  palmera  de  la  región,  divisiones  y  paredes,  un  encofrado  en   esterillas  guadua  rellen o  por  una  argamasa  de  diversos  materiales  de  origen   vegetal  compactada  con  mediante  golpes  con  \"pisón\",  recubiertas  de  una  última   capa  para  el  lustre  con  algún  tipo  de  cal;  sus  patrones  siempre  siguen  formas   rectangulares  además  utilizada  para  el  inmobilia rio  interno,  elaborado   completamente  con  los  materiales  disponibles  en  el  lugar.  Las  enramadas   externas anexas al bahareque las llaman caney.    En  general  se  utilizan  cañas  de  la  familia  Poaceae,  en  especial  en  zonas  de   cordillera  donde  dichas  especies  abund an.  Sin  embargo,  el  sistema  es  versátil   hasta  el  punto  de  permitir  una  amplia  variedad  de  especies  para  su  estructura,   como  el  cardón  en  la  guajira  o  el  Arboloco,  una  especie  de  sistemas  sucesiones   tempranos. Los techos de las viviendas en bahareque fueron   y son elaborados de   igual manera con una infinidad de materiales naturales, entre ellos hojas de palma,   hojas  de  Yarumo,  cañas,  o  han  sido  adaptados  a  tecnologías  foráneas  como  la   teja cocida, eternit o zinc.   \n10       El  bahareque  ha  sido  utilizado  a  través  de  los     siglos  en  Colombia,  para  la   construcción de viviendas. Utilizado en primera instancia por grupos indígenas, fue   la  elección  primaria  de  los  colonizadores  europeos  o  mestizos,  que  supieron   adaptarlo  a  las  condiciones  ambientales,  aprovechando  una  diversa  s elección de   materiales  y  técnicas  nativas.  Posteriormente,  muchas  de  las  viviendas  de   bahareque fueron reemplazadas por técnicas de adobe o tapia pisada, aunque el   bahareque  siguió  siendo  la  técnica  de  predilección  en  lugares  como  el  eje   cafetero,  donde  ex iste  aún  hoy  un  uso  de  bahareque  sobre  cañas  de  guadua  o   cañabrava.  Puede  ser  combinado  con  tapiales,  adobes  y  bases  rasantes  y  sub -  rasantes  de  ladrillo  o  piedra,  con  la  finalidad  de  dar  mayor  durabilidad  a  la   estructura.    Como  tecnología  apropiada  se  ha  ut ilizado  con  éxito  en  la  construcción  de   viviendas  sismo  resistentes  en  Popayán  y  Armenia,  Colombia;  igualmente  en   costa  rica,  donde  tuvo  excelente  acogida  luego  de  resistir  un  sismo  de  7.5,  en  la   escala  de  Ritcher,  el  22  de  abril  de  1991.  En  Perú  se  conoce     un  sistema  similar   llamado  quincha.  Una  de  sus  características  es  el  microclima  agradable  que  se   conserva en su interior.       5.1.2  Guadua    Guadua es un verdadero dinosaurio del reino vegetal; no es una especie forestal   (árbol), es una gramínea, es decir un p asto gigante de la misma familia del maíz,   del arroz y del trigo; es la especie vegetal de más rápido crecimiento; puede crecer   en promedio 10 cm diarios; a diferencia de los árboles maderables que requieren   cerca de treinta años para su aprovechamiento y  su uso en la construcción.    El pino que es una de las especies forestales de más rápido crecimiento tarda 15   años  para  ser  utilizado;  la  guadua  se  puede  utilizar  a  los  4  años  de  sembrada   cuando ya está madura y es apta para su uso en construcción.   \n11       Aunque és ta se da desde el nivel del mar hasta los 2.600 metros sobre el nivel del   mar,  las  que  se  encuentran  sobre  los  1.300 metros  sobre  el  nivel  del  mar    -     zona   cafetera  -   tienen las mejores características físicas y mecánicas.    Las   fibras   de   la   guadua   son   muy   resistentes.       Simón   Vélez   relata:   “los   esfuerzos   de   tracción   para    cualquier     tipo     de     material     en     estructuras     son     las     más    difíciles   de   resolver   y   su   relación   peso - resistencia   solo   es    comparable   con   las   obtenidas   por   elecciones   de    materiales   de   la   era   espacial.   La   importancia   de   la   guadua    en   la   obra   de   Simón    Vélez   que   hay   que   inmunizarla,   la    guadua   es   un   milagro”       “La   Guadua   es   una   de   las   500   especies   conocidas   de   las    Bambuseas,   se   crecen   en   todos   los   continentes,   excepto    en     Europa.     El     90%     de     ellas     se     encuentran     en     Asia     y    América.       El     género     americano     “guadua”     comprende     cerca     de     20    especies.     En     Colombia     existen     las     especies:     Guadua    angustifolia   y   guadua   Latifonlia.   De   la   guadua   angustifolia,    que   es   la   de   más   usos,   se   conocen   en   el   antiguo   Caldas    las   variedades:   guadua   macana,   guadua   cebolla   y   guadua    rayada.     La     guadua     macana     es     la     más     empleada     en     la    construcción,   pues   tiene   las   paredes   más   gruesas.”    ( Tomado  de  la  página  de  la  Universidad   Nacional en Manizales, ver cibergrafia)       5.1.3  Tapial    El  tapial  e s  una  técnica  muy  utilizada  por  nuestros  ancestros.    Se  recolectaba  la   tierra y se apisonaba hasta convertirla en muros para luego ponerle un techo y así   tener  un  refugio  de  las  inclemencias  del  tiempo,  ha  resistido  los  cambios  del  ser   humano y sigue siend o utilizada en baja densidad en algunos pueblos de nuestro   país y de el mundo.    \n12         Según  Cointereaux,  en  el  libro  abete  Rosier  y   Ronde  let,  “La  tierra  utilizada  se  extrae   directamente  del  suelo.  Debe  estar  seca,  para   tener suficiente cohesión debe ser apison ada.     Se pueden hacer algunas observaciones a la tapia   pisada.  Esta  representa  a  sus  ojos  innumerables   ventajas”:          El  muro  de  tapial  transpira.  como  el  adobe,  es  higroscópico  (conserva   humedad) y tiene capacidad de difusión.       Posee buena capacidad para alma cenar frio o calor, es buen aislante.       Emisión radioactiva muy baja.       Es  semejante al  adobe  en  cuanto a  la  composición del material:  tierra  con   algún  aditivo  para  estabilizarlo  (paja)  o  pequeñas  piedras  para  mayor   resistencia.       Densidad de 1800 y  2100 kg/m3.       Resistencia a la compresión de 15 kg/cm2.       Buen aislante térmico y acústico; un muro de 40 cm atenúa el ruido en 56   db.       Gran  inercia  térmica  que  le  permite  permanecer  fresco  durante  el  día  y   soltar calor acumulado durante la noche.    Ventajas:       Rapidez en la  construcción.       Costo mínimo.       Economía de madera.       Transformación en abono a la demolición.       Resistencia al fuego       Solidez y durabilidad   \n13       Nota:  no  todas  las  tierras  son  adecuadas  para  la  construcción  de  tapia   pisada: se estima que la mejor tierra debe estar comp uesta por:    • Gravilla: 0 a 15%    • Arena: 40 a 50%    • Limo: 35 a 20%    • Arcilla: 15 a 25%    Bahareque    Antecedentes  históricos  nos  demuestran  que  la  construcción  mixta  estuvo   presente  en  el  desarrollo  de  las  civilizaciones  que  poblaron  nuestro  planeta,  el   hombre    aprendió  a  construir  su  vivienda  con  tierra  y  elementos  vegetales  como   estructura, dando así lugar a interesantes formas de viviendas que demuestra una   cultura constructiva inteligente.    En  la  actualidad,  en  diferentes  partes  del  mundo  podemos  apreciar  este    patrimonio constructivo y también podemos verificar su continuidad constructiva, a   pesar de los embates de la naturaleza, sobre todo frente a los terremotos.    Esta alternativa constructiva (estructura y relleno) lleva diferentes nombres según   la  región,  en   el  Perú  “la  Quincha”,  en  Cuba  “El  Cuje”,  en  El  Salvador  “El   bahajareque”, el “pao pique” en Brasil o tabiquería en otros países, es así que en   el  mundo  podemos  encontrar  una  gran  variedad  de  tipos  o  formas  constructivas   pero que tienen la misma caracterís tica.    Está demostrado que el bahareque o similar responde satisfactoriamente frente a   los  sismos,  sus  características  físico  mecánicas  resultan  apropiadas,  últimos   sismos  (Ejemplo:  América  Central)  dan  fe  de  ello,  también  estudios  científicos   realizados  ha n  confirmado  la  eficacia  de  este  sistema  constructivo.  Entonces,  el   propósito  de  esta  guía  de  construcción  es  de  entregar  un  soporte  técnico - teórico  \n14       que  podrá  ser  utilizado  por  los  técnicos  de  construcción,  albañiles  y  toda  aquella   persona que decida const ruir su vivienda.          Los  sismos:  como  se  originan,  como  actúan  frente  a  una   vivienda.       La materia prima: todos los materiales (madera, bambú o similar   y la tierra)        La  construcción  parasísmica:  desde  el  diseño,  implantación  y   etapas constructivas.       “Hemos  insistido  en  estructurar  la  guía  de  esta   manera  con  el  propósito  que  el  constructor  o   poblador  tenga  una  idea  más  clara  del  porque  de   las dimensiones, forma y técnica constructiva, que   si bien es cierto, determina ciertas limitantes en un   primer mom ento, también al final hay un beneficio   con  una  vivienda  de  mayor  seguridad  frente  al   sismo.     Ciertamente,  se  considera  una  vivienda   parasísmica  cuando  ha  cumplido  principalmente   con los parámetros que exigen un diseño correcto,   calidad  del  terreno,  calida d  constructiva  y   materiales,  no  puede  prescindirse  de  ninguno  de   ellos”    (Extraído    de    “BAHAREQUE:    GUIA    DE   CONSTRUCCION  PARASISMICA”  Autores.  Arq.   Wilfredo Carazas Aedo, Arq. Alba Rivero Olmos)         5.2  RECOLECCIÓN DE MATERIALES.    A  través  de  pruebas  de  campo  si mples  verificar  si  la  tierra  conviene  para  la   construcción, estas nos muestran las características de la tierra. Para verificar sus   componentes o granulometría: la manipulación  -   olor, su plasticidad, \"el cigarro\" la  \n15       cohesión y \" la pastilla \", el resultad o de estas pruebas nos indican la calidad de la   tierra.       Dentro  de  los  recursos  forestales  tropicales  esta  la  madera,  constituye  el   recurso renovable más abundante ella contribuye a la solución del problema   habitacional.       Presenta propiedades de resistencia  físicas y mecánicas muy importantes y   es accesible para la población siempre y cuando se haga racionalmente.       Clasificados  en  botánica  como  gramíneas,  estas  especies  de  tallos   verticales, cilíndricos y huecos nos ofrecen una serie de       características  físicas   y  mecánicas  que  permiten  su  utilización  en  la   construcción.       Es  un  material  accesible,  de  fácil  laborabilidad  con  métodos  manuales  y   sencillos.          “norma    unificada    para    el    manejo    y   aprovechamiento  de  la  guadua    –     reglamentación   para  el  manejo,  y  aprovechamie nto  sostenible  de   los  bosques  naturales  y  las  plantaciones   protectoras  –   productoras  y  protectoras  de   guadua,  cañabrava  y  bambú”.    (Extraído  de   “Convenio  020  de  2001  proyecto  manejo   sostenible  de  bosques  en  Colombia.  Resolución:   nº  008  de  febrero  8  de  2002     de  Corpocaldas.    Norma  revisada,  ajustada  y  adoptada  por   resolución nº 185 de 2008”)    5.3  Corte       El  momento  más  adecuado:     en  época  seca,  en  luna  menguante  y  en   edad adulta que estará en función de la especie.       Preservación:   Esta  permite  la  durabilidad  de  las  varas.  Consiste  en   aprovechar  los  espacios  entre  las  fibras  interiores  para  depositar  los   productos  germicidas,  fungicidas  e  insecticidas  para  las  varas  que  estarán  \n16       expuestas,  para  las  varas  que  quedarán  embebidas  en  el    muro  solo  será   necesario  eliminar  los  almidones  y  azúcares  que  puedan  quedar  aún  al   interior.       El  corte debe  ser  entre  30  y  40  cm por encima del  suelo  y  después  de un   nudo.       Si va a ser utilizado como elemento estructural debe ser cortado en la edad   adulta.       El corte se hará de manera “limpia” para no lastimar el tallo, el instrumento   utilizado debe estar bien afilado.       Después del corte se necesita un período de curado donde el objetivo será   de  expulsar  la  sabia  que  se  encuentra  al  interior  del  tallo  y  para  el lo  es   necesario dejar las varas en el campo de corte de forma vertical, sin quitar   sus ramas y evitando el contacto con el suelo, aquí se dejarán unos 4 a 8   días.    5.4  Métodos       Por inmersión en una solución conservante (salina, cal o asfalto quemado)   durante   5 horas o simplemente en agua limpia durante un mes, cambiando   el agua diario.       Procedimiento “Boucherie” con conexión de los tallos a un depósito elevado   con producto preservante.       Llenado de los tallos, tapados en un extremo con productos reservantes.       5. 4.1  Especies más utilizadas en la construcción en América Central:       Arundo donax (caña gigante, caña bambú, vara de coheta)       Gynerium sagittatum (caña brava, caña blanca, caña amarga, vara de tusa)       Phragmites communis (caña acuática común)       Guadua angustifoli a (caña de guayaquil, bambú, guadua)   \n17          Chusquea spp ( chusque, carrizo suro)    5.4.2  Morfología de la guadua.    Las raíces: el sistema radicular está formado por raíces, raicillas y por los rizomas,   los  mismos  que  corresponden  a  modificaciones  m  tallo,  con  la  di ferencia  de  que   este crece hacia fuera y los rizomas son subterráneos. en el rizoma se encuentran   las  yemas,  de  cuya  activación  se  generan  nuevos  rizomas  y  por  tanto  nuevos   tallos.      El  tallo  o  culmo:  el  culmo,  también  llamado  \"cogollo\"  o  \"espolón\"  por  nues tros   campesinos, al emerger del suelo lo hace con un tallo definitivo. Un tallo o culmo   adulto,  alcanza  una  altura  entre  15  y  25  metros.  es  leñoso,  recto  ligeramente   arqueado  en  la  punta,  y  está  formado  por  muchos  nudos  y  entrenudos  llamados   \"canutos\".  alr ededor  de  cada  nudo  aparece  una  banda  blanca,  que  es  una  de  la   características de identificación de la especie.      Hojas caulinares: estas hojas de color marrón o café claro, protegen al tallo y sus   yemas  durante  su  crecimiento  inicial  los  primeros  meses.  mi entras  un  tallo   conserva  las  hojas  caulinares  o  \"polainas\"  se  lo  considera  como  un  brote  o   renuevo  ,  los  campesinos  lo  llaman  \"borracho\".  Son  de  forma  triangular,  fuertes,   con  pelillos  en  su  parte  exterior  y  lustroso  por  el  interior.  las  hojas  caulinares  o    polainas  se  desprenden  del  culmo,  cuando  salen  las  ramas  que  brotan  de  las   yemas.      Hojas  de  follaje:  las  hojas  del  follaje  ubicadas  en  las  ramas,  son  lanceoladas,   alternas y simples. su longitud varía entre 8 y 20 cm y su ancho está entre 1,5 y   3,5 cm. po r el revés presenta pubescencias (pelillos) blanquecinos esparcidos.    Flores: la guadua florece esporádicamente. las flores están dispuestas en grupos,   en  los  extremos  de  las  ramas,  son  escasas  y  nada  vistosas.  el  extremado  calor   producido  por  incendios for estales  también las  hace florecer, no  importando  para   ello la edad o el tamaño de la planta.   \n18       Semillas:  las flores,  generan  espigas  que  luego  se  convierten  en semillas  que  se   asemejan a granos de arroz, por su forma, tamaño y cubierta.    Yemas:  las  yemas    están  presentes  en  el  tallo  o  culmo,  en  las  ramas  y  en  los   rizomas o en las raíces que favorecen la reproducción y propagación vegetativa.    Se  denomina  tapia  o  tapial  a  una  antigua  técnica  consistente  en  construir  muros   con  tierra  arcillosa,  compactada  a  go lpes  mediante  un  pisón,  empleando  un   encofrado deslizante para contenerla.    El  encofrado  suele  ser  de  madera,  aunque  también  puede  ser  metálico.  En  el   proceso, se van colocando dos maderas paralelas, entre las que se vierte tierra en   capas de 10 o 15 cms.,  y se compacta mediante apisonado.    Posteriormente  se  corre  el encofrado  a  otra posición  para  seguir  con el muro.  La   tierra  compactada  se  deseca  al  sol,  y  una  vez  que  la  tapia  o  tapial  queda   levantado, las puertas y ventanas se abren a cincel.    Por  su  conteni do  energético  extremadamente  bajo,  en  la  actualidad  se  vislumbra   como una técnica constructiva que minimiza el impacto ambiental y las emisiones   de  gases  de  efecto  invernadero;  uno  de  los  principales  postulados  de  la   arquitectura sustentable.       Las  construc ciones  llevadas  a  cabo  con  esta  técnica  tienen  propiedades   bioclimáticas,  ya  que  mantienen  una  temperatura  relativamente  estable  en  su   interior durante todo el año.    5.5  METODOS DE CONSTRUCCION    El  método  de  construcción  varía  según  su  material,  su  ubicación     el  diseño  del   proyecto  y  la  cultura  de  la  región  son  los  factores  más  importantes    que   contribuyen al cómo se emplazara, diseñara, construirá y que método se ejecutara   para  ella,  por  otra  parte  se entiende  que por  la  zona   en  la  que  se  encuentre  los  \n19       mater iales  varia  si  como  lo  construye.  De  todo  el  diseñar  es    una  parte  fácil,  ya   que  la  creatividad  fluye  fácil  y  se  puede  dar  a  un  problema  sea  de  vivienda  o   institucional  o  de  recuperación  histórica,  pero,  como  se  ejecute  lleva  un  arduo   proceso  puesto  que  se     ha  ido  perdiendo  con  métodos  y  son  muy  pocos  los  que   quedan que conservan las enseñanzas de nuestros ancestro en estos tiempos.    5.5.1  Lugar de construcción.    Dado  que  la  metodología  para    construir  varia,  es  necesaria  saber  a  qué  se   enfrenta  y  en  que  entor no  tiene  para  poder  diseñar    el  proyecto  de  manera  más   efectiva  y  que  el  cliente  quede  satisfecho  con  el  resultado  y  con  lo  que    se   buscaba.    Por  lo  general,  en  los  ensayos  sobre  el  espacio  arquitectónico  se  incide  tácita  y   expresamente  en  el  espacio  interi or  como  cosa  principal.  Y  es  porque  éste  es   Primigenio,  lo  que  está  primero.  Es  lo  que  necesitamos  antes  que  nada,  lo  que   primero  hacemos  por  la  necesidad  natural  que  tenemos  de  protección,  de  techo,   de interioridad, de privacidad.    En  cuanto  construimos  lo   anterior,  comenzamos  a  generar  un  exterior  con   arquitectura,  aun  cuando  sea  sin  un  propósito  esclarecedor.  En  este  sentido,  lo   exterior es casi, accidental, pero sólo en un contexto muy teórico, por cuanto en la   acción de habitar es ineludible el uso de l o de adentro y lo de afuera, que sumado   a la condición gregaria del hombre nos lleva a las modalidades arquitectónicas del   exterior.    \"El  hecho  de  construir  lleva  inalienablemente  consigo  el  carácter  expansivo  de   \"poblar\",   que corresponde al habitar y ocupa r con los demás. El haz y el envés de   la  arquitectura  estriban  en  que  la  construcción  siempre  tiene  el  doble  sentido   señalado.    En  cuanto  a  \"la  población\"  caben  destacar  dos  aspectos  que  estimamos   primordiales:  uno,  que  poblar  indica  la  acción  cuantitativa    del  hombre  con  los  \n20       demás,  significada  en  \"lo  populoso\"  como  lo  abundante,  y  otro:  que  la  noción   correspondiente al hecho de \"poblar\" se halla en el término \"público\" (contrapuesto   a  lo  privado,  antes  referido  respecto  a  la  casa),  en  el  que  se  denota  la  acc ión   arquitectónica del hombre como apertura, salida o expansión hacia el contorno.    En cuanto salimos hacia el contorno con acciones arquitectónicas, constituimos el   exterior  arquitectural.  Este  exterior  arquitectural  ha  de  ser  espacio  arquitectónico   en cua nto se conforme tridimensionalmente como espacio circunscrito, delimitado   y  estructurado  en  su  propia  dimensional  dad.  Sólo  entonces  podemos  hablar  de   espacio exterior.    Más  el  adjetivo  \"exterior\"  implica  desde  ya  lo  que  está  fuera,  \"por  la  parte  de   afuera\" ,  y  el  interior  es  lo  perfectamente  delimitado,  lo  plenamente  conformado,   pero  ante  todo,  lo  que  está  techado,  cubierto,  protegido  y  delimitado  respecto  al   infinito  celeste.  Lo  que  está afuera,  entonces,  es  primordialmente  lo  que  no  tiene   techo, lo abierto   al cielo.    Entonces  el  espacio  arquitectónico  exterior  o  aquel  espacio  conformado   artificiosamente,  legible  y  nombrado  en  la  singularidad  de  nuestros  empleos  y   operaciones es fundamentalmente abierto, libre hacia el cielo: patio, calle, plaza o   ciudad.    Seg ún  Morales.  \"Los  espacios  abiertos  suelen  ser  por   excelencia,  los  del  desplazamiento.  En  ellos  el  estar   corresponde  a  \"estar  de  paso\"  o  en  tránsito.  Son   normalmente,  áreas  para  el  hombre  transeúnte  que  las   recorre  movido  por  sus  vehículos  o  a  pie  y  entonce s,  el   \"trato\"  que  en  ellas  tiene  corresponde  al  \"trecho\",  al   \"trazo\" que une dos puntos: aquel de dónde venimos y al   \"extremo hacia el que vamos”. Por ello, el \"entre\" que   producen  tales  pinitos  no  originan  intimidad  alguna,   considerándose  que  la  intensifi cación  de  semejante  \n21       espacio  se  debe  a  la  frecuencia  con  que  \"los  muchos\"   pasan sobre lugares diversos\".    El dar lugar al desplazamiento es una razón de ser principal o fundamental de los   espacios  abiertos  o  exteriores  arquitecturizados,  lo  que  se  enlaza  con     la  idea  de   espacio  público;  el  espacio  urbano.  Pero  no  es  la  única  razón:  también  existe  el   espacio exterior privado o el exterior restringido a lo público y que tienen funciones   propias  de  expansión,  recreación,  permanencia,  que  sirven  de  relación  o  enla ce   entre las arquitecturas del interior.    Lo que el espacio exterior no podría dejar de ser, si es, en rigor, arquitectónico, es   un \"entre” la arquitectura del interior y la naturaleza, en cuanto sea ésta última   conformadora  del  espacio  abierto.  Y  en  este  s entido,  el  exterior  es  un  espacio   relacionado.       Podemos distinguir claramente tres categorías de espacios exteriores en cuanto a   su razón de ser como función:       El espacio del aire, de la luz y de la naturaleza que es propuesto entonces   con  fines  precisos  de     aireación  o  ventilación  natural  de  iluminación  y  de   recreación visual a través de la incorporación de naturaleza.       El  espacio  para  el  desplazamiento  como  función  principal  o  de  la  relación   entre los artificios arquitectónicos.       El  espacio  de  la  permanencia    para  el  descanso,  la  recreación,  la  relación   entre las personas; la comunicación humana.       “Si observamos situaciones reales en que se dan   estos  tipos  de  espacios,  veremos  que  la   naturaleza,  en  lo  vegetal,  asume  una  singular  \n22       importancia,  por  la  necesidad  in herente  del   hombre  de  ligarse  a  lo  natural,  pues  no  estamos   hechos para vivir en la artificialidad total”.    (Extraído  de  El  Espacio  Arquitectónico,  Muñoz   Serra,  Victoria  Andrea,  Sitio  Web:  Victoria  Andrea   Muñoz  Serra  (http://www.victoria - andrea - munoz -  serra. com/arquitectura.html),  Concepción,  Chile,   diciembre del 2012.)    5.5.2 Construcción de proyectos arquitectónicos       En Guadua.     Sembrando  80  plántulas  de  guadua  en  un  área  de  1.300  M2,  al  cabo  de  4  o  5   años  se  puede  obtener  de  una  sola  vez  un  guadual  desarrolla do,  con  el  material   aproximado  correspondiente  a  130  tallos  o  culmos  requeridos  para  construir  los   muros  y  estructura  de  vigas  superiores  y  columnas  necesarios  para  una  casa de   60 M2 y además el guadual como cultivo sigue siendo productivo.      Lo  anterior  es     perfectamente  posible  en  la  mayor  parte  de  mundo,  teniendo  en   cuenta  que  en  un  guadual  nativo,  del  tipo  zona  cafetera,  técnicamente  explotado   podemos obtener 1.300 culmos o tallos de guadua por hectárea / año, es decir, se   puede obtener el material básico   para construir 10 casas/año.     La Guadua es un recurso poco explotado y conocido en nuestro medio de manera   técnica  y  masiva;  la  hemos  conocido  desafortunadamente  en  construcciones   provisionales y mal hechas ( campamentos temporales de construcción, vivien das   \"tuguriales\" ) lo que la ha llevado a cierto desprestigio; pero de la misma manera   como se construye con ladrillo la casa del rico o del pobre, igual pasa con ésta y   finalmente  no  es  el  material  en  si  lo  que  hace  la  diferencia  sino  toda  una   concepción  integral lo que la hace.    \n23          En Tapial     Las  construcciones  llevadas  a  cabo  con  esta  técnica  tienen  propiedades   bioclimáticas,  ya  que  mantienen  una  temperatura  relativamente  estable  en  su   interior durante todo el año por su contenido energético extremadamente    bajo, en   la actualidad se vislumbra como una técnica constructiva que minimiza el impacto   ambiental y las emisiones de gases de efecto invernadero; uno de los principales   postulados  de  la  arquitectura  sustentable  el  tapial  necesita  una  base  seca  que   normal mente  está  constituida  por  un  zócalo    - cimiento  de  piedra  del  lugar,  que   eleva el muro unos 30 cms. por encima del terreno.    Se  utiliza  un  encofrado  de  madera  para  depositar  el  material  (tierra),  el  que  se   compone  de  tablones  paralelos  (separados  de  acuerdo    al  espesor  del  muro)   unidos por travesaños que son retirados al desmoldar.     La tierra es vertida en el interior de los encofrados por capas de 10 a 15 cms. y es   compactada mediante apisonado.     “Para  el apisonado  manual  se utiliza  un  “pisón”,   herramienta de   madera de 5 a 8 kg., con el cual se   golpea  la  tierra  hasta  llegar  a  la  compactación   necesaria. Posteriormente la tierra compactada se   deseca  al  sol  y  se  corre  el  encofrado  a  otra   posición  para  seguir  con  el  muro”.  (Extraído  de   http://www.slideshare.net/ma cs91980/muros - de -  tapial - 3807947)       En Bahareque    El  bahareque  es  característico  de  América,  dentro  de  los  tipos  está  el  embutido,   esterilla y el tejido. Las comunidades Caribes del interior de Colombia Venezuela a   sus  lugares  de  habitación  construidos  con  materiales  naturales  como  pilotes   estructurales  d e  madera;  con  cubiertas  protectoras  a  dos  aguas,  elaboradas  con   las  hojas  de  la  palmera  de  la  región,  divisiones  y  paredes,  un  encofrado  en   esterillas  guadua  relleno  por  una  argamasa  de  diversos  materiales  de  origen   vegetal  compactada  con  mediante  golpes  c on  \"pisón\",  recubiertas  de  una  última  \n24       capa  para  el  lustre  con  algún  tipo  de  cal;  sus  patrones  siempre  siguen  formas   rectangulares  además  utilizada  para  el  inmobiliario  interno,  elaborado   completamente  con  los  materiales  disponibles  en  el  lugar.  Las  enramad as   externas anexas al bahareque las llaman caney       Material para encofrado:       Cardón (Costa atlántica)       Arboloco (Eje cafetero)       Guadua       Cañabrava       Caña de castilla       Chusque (tierras altas, Cundinamarca, Boyacá)       Maderas finas (Nogal, cedro, cucharo, etc.)       Recubrimiento  en:  Cagajón,  Láminas  metálicas,  Tablas  de  madera,   Mortero de Cemento, Madera contrachapada, Fibrocemento.    En  general  se  utilizan  cañas  de  la  familia  Poaceae,  en  especial  en  zonas  de   cordillera  donde  dichas  especies  abundan.  Sin  embargo,  el  si stema  es  versátil   hasta  el  punto  de  permitir  una  amplia  variedad  de  especies  para  su  estructura,   como el cardón en la Guajira o el arboloco, una especie de sistemas sucesionales   tempranos. Los techos de las viviendas en bahareque fueron y son elaborados de    igual manera con una infinidad de materiales naturales, entre ellos hojas de palma,   hojas de yarumo, cañas, o han sido adaptados a tecnologías foráneas como la teja   cocida, eternit o zinc.    El  bahareque  ha  sido  utilizado  a  través  de  los  siglos  en  Colombia  para  la   construcción de viviendas. Utilizado en primera instancia por grupos indígenas, fue   la  elección  primaria  de  los  colonizadores  europeos  o  mestizos,  que  supieron   adaptarlo  a  las  condiciones  ambientales,  aprovechando  una  diversa  selección de   materiale s  y  técnicas  nativas.  Posteriormente,  muchas  de  las  viviendas  de   bahareque fueron reemplazadas por técnicas de adobe o tapia pisada, aunque el  \n25       bahareque  siguió  siendo  la  técnica  de  predilección  en  lugares  como  el  eje   cafetero,  donde  existe  aún  hoy  un  uso  d e  bahareque  sobre  cañas  de  guadua  o   cañabrava.  Puede  ser  combinado  con  tapiales,  adobes  y  bases  rasantes  y  sub -  rasantes  de  ladrillo  o  piedra,  con  la  finalidad  de  dar  mayor  durabilidad  a  la   estructura.    Como  tecnología  apropiada  se  ha  utilizado  con  éxito  en  la  construcción  de   viviendas  sismo  resistentes  en  Popayán  y  Armenia,  Colombia;  igualmente  en   Costa Rica. Donde tuvo excelente acogida luego de resistir un sismo de 7.5, en la   escala  de  Ritcher,  el  22  de  abril  de  1991.  En  Perú  se  conoce  un  sistema  similar   l lamado  quincha.  Una  de  sus  características  es  el  microclima  agradable  que  se   conserva en su interior.       5.6 CONSTRUCCION       Todo  proyecto  de  arquitectura  re  quiero  también  de  un  proceso  de  construcción   con  diferentes.  Técnicas,  pero  lo  más  importante  es  que  se     cumpla  con  los   requisitos  establecidos  con  la  ley  y  si  este  proceso  no  se  encuentra  dentro  de   ellos,  motivar  ala  gobiernos  para  que  observen  una  forma  de  construir  y  dar   solución  de  vivienda,  barata  de  buena  calidad,  no  afectan  en  medio  ambiente  y   económi cas,  porque  la  materia  prima  es  fácil  de  conseguir  y  no  destruye  el   ambiente.                  \n26       5.6.1 Proceso y desarrollo    De acuerdo a las necesidades y los recursos económicos se procede a proyectar y   planear una solución de vivienda, primero a través de un estudio de l proyecto y el    posterior levantamiento en planos.    Se  pretende  elevar  la  calidad  del  funcionamiento  y  confort  de  los  espacios   logrando  que  las  actividades  que  se  desarrollan  en  el  día  a  día  c  sean  lo  más   cómodas y eficientes.    Se  debe  mantener  una  temperat ura  interior  adecuada,  los  espacios  de  servicio   (cocina,  baños,  patios  y  cocheras)  deben  estar  bien  pensados  para  situarlos,   además de que tienen que estar correctamente iluminados y ventilados.    El  principio  de  un  buen  proyectista  es  el  de hacer más  con    menos,  es  decir,  que   gastes  y  construyas  lo  menos  posible  para  así  hacer  espacios  más  amplios  y   agradables, sin sacrificar la calidad en los resultados.    El  Proyecto  Arquitectónico  es  único  e  irrepetible,  es  un  diseño  personalizado   basado en condiciones y s ituaciones de emplazamiento particulares que no podría   ser usado en otro terreno o propiedad diferente para el que fue diseñado.       Aprovechamiento máximo del espacio de tu terreno.       Disminuyen los costos de la construcción, ya que solo se construye lo justo   y   necesario.       Previenes  posibles  problemas  de  construcción,  como  construir  más  de  lo   necesario o desperdiciar espacio.       Espacios mucho más cómodos y confortables.       Orientación y ventilación correcta de los espacios.       Funcionamiento óptimo y práctico entre los e spacios.       El  edificio  se  piensa  y  adecua  a  tus  necesidades  personales  o  familiares   específicas.       Aumenta la calidad de vida de todos los que habiten esos espacios.   \n27       Antes de realizar el proyecto arquitectónico hacer:       Topográfico       Mecánica de Suelos    5.6.2 Aplica ción de las norma sismo resistente    Aplicación  de  norma  NSR2010  sería  necesario  que  el  ministerio  de  vivienda   aceptara  estas  técnicas  para    su  uso  máximo  y    reevaluara  la  norma  sismo   resiente.    Especialmente en el titulo E ya que este habla acerca de las viv iendas de primer  y   segundo nivel (uno o dos pisos). El titulo G habla de estructuras en madera y en   guadua.    El  Título  G  establece  los  requisitos  de  diseño  estructural  para  edificaciones  de   madera.  Una  edificación  de  madera  diseñada  y  construida  de  acuerdo     con  los   requisitos  del  Título  G  tendrá  un  nivel  de  seguridad  comparable  a  los  de   edificaciones de otros materiales que cumplan los requerimientos del Reglamento.    Cuando  este  Reglamento  se  refiera  a  elementos,  miembros  o  edificaciones  de   madera,  se  entende rá  refiriéndose  a  una  edificación  totalmente  de  madera  o  a   miembros o a elementos que conforman una edificación mixta en la cual la madera   se  combina  con  otros  materiales,  cobijados  o  no  dentro  del  alcance  de  este   Reglamento.    Esta norma se puede complement ar con la Norma Técnica Colombiana NTC 2500   Uso  de  la  Madera  en  la  Construcción,  publicada  por  el  ICONTEC,  Instituto   Colombiano  de  Normas  Técnicas  y  Certificación,  la  cual  se  ocupa  de  la  madera   como  material  de  construcción  y  de  los  procesos  industriales  y     tratamientos,  así   como  de  los  requisitos  de  fabricación,  montaje,  transporte  y  mantenimiento  de   elementos  de madera.  Se  recomienda el  uso  simultáneo  de  ambas  normas, pero   para todos los aspectos priman las normas del presente Reglamento.   \n28         El  titulo  E  habl a  de  la  vivienda  de  niveles,  establece  los  requisitos  para  la   construcción  sismo  resistente  de  viviendas  de  uno  y  dos  pisos  de  mampostería   confinada y de bahareque en cementado. Estos requisitos son de índole general y   están  dirigidos  a  todos  los  profesion ales  de  la  ingeniería  y  la  arquitectura  que   trabajan  en  construcción  de  vivienda,  así  no  sean  especialistas  en  cálculo   estructural.  En  este  Título  se  establecen  las  condiciones  estructurales  que   permitan  un  funcionamiento  adecuado  de  las  viviendas  de  uno  y     dos  pisos  ante   cargas laterales y verticales en las diferentes zonas de amenaza sísmica.    5.6.3  Fundamento de investigación    El  enfoque  del  proyecto    basado  en    lo  que  se  propone  es  cualitativo  con  un   objetivo  claro.  El  desarrollo  de  proyectos  constructivos     a  través  de  técnicas   ancestrales, aplicando e luso de las normas de construcción sismo resistente año   2010 (NSR10).       Tipo de investigación       Descriptiva:   plantea el desarrollo de espacios en el cual el ser humano se   ubique y obtenga una buena estabilidad.        Propositiva:     organizar  espacios    en  el  que  se  adecue  el  ser  humano,   espacios  en  los  cuales  se  pueda  disfrutar  socializar  y  compartir  en  una   forma  que se ha perdido   por el paso de los años.      \n29       6. DISEÑO METODÓLOGICO PRELIMINAR             ¿ Como podemos afianzar ma teriales   ancestrales como el Tapial, el Bahareque y la   Guadua para el uso común en la arquitectura   de hoy en día ?   \n30         \n31       FUENTE  -   DOCUMENTO    CATEGORÍAS DE ANÁLSIS  -   DERIVA DE LA PREGUNTA Y NÚCLEO PROBLEMÁTICO    origen de los materiales     proceso constructivo    materiales  en  el  uso   constructivo    tratamiento  al  medio   ambiente    materiales  reciclables    Materiales  reciclados o   del  entorno  al  lugar  de   construcción.    en  algunos  caso  se   requiere  mano   experimentada  para  la   construcción    mas  rápido  y  menos   gastos    disminuye    los  gastos   energéticos y de CO2    la tapia pisada   tierra   se  requiere  de  experto   en el   uso    Rapidez  en  la   construcción    Costo  mínimo    Economía  de  madera    Aislamiento  térmico    Transformación  del   abono  a  la  demolición    Resistencia  al  fuego    Solides y durabilidad    mínimo  ya  que    el  uso  del   material  es  el  que  este   cerca  en  caso  de    destrucción  este reg resa a   su estado  natural    Rincones del atlántico    “adobe de tierra”      tierra arcillosa     se  puede  juntar  los   ladrillos  y  realizar   estructuras  de  un  solo   nivel       material  moldeable   entre  tierra  arcillosa  ,   fibras  vegetales,  arena   y  gravas  de  diferentes   tamaños  y  se  requiere   de   experto    el  material  es  solo  tierra   esta    al  no  estar    cocida   puede  regresar  a  su  forma   natural    bahareque   los  materiales  varía   según la región     se  puede  juntar  los   ladrillos  y  realizar   estructuras  de  un  solo   nivel    la  técnica  requiere  de   mano con experiencia    el  material  es  renovable  y   es  natural       monografía  de     análisis  de  autores    simon velez  –   la guadua    planta  de  originaria  del   continente América    se  requiere  que  la   planta  este  a  la  altura   adecuada  para  poder   córtala y utilizarla    este proceso     es  una  planta  que  se   regenera  muy  fácil  por  lo   tanto  no se ve afectada     \n32       VACÍOS    destrucción  de  los   recurso  para  la   elaboración     muy pocos expertos  en   el área     muchos  procesos  de   construcción  no  están   normalizados  por  NSR   10    muy  poco  uso  de  este  tipo   de construcción    TENDENCIAS   los  materiales   reutilizables     cada  vez  hay  más   lugares  que  usan estas   técnicas  de   construcción    en países desarrollados   se    ve  el  crecimiento   del  uso  de  muchas  de   estas técnicas    no se ve afectado  el medio   ambiente  ya  que  son   materia  orgánicos  y    reciclables    PRONÓSTICOS    perdida  de  los  recursos    por  el  consumo     acelerado  de  estos  en   otros uso    posible  pérdida  de   conocimientos   ancestrales    los materiales     de  seguir  usándose  este   técnicas    no  se  tendrá  que   consumir    tanto  los   recursos no renovables              APORTE  A  LA   FORMULACIÓN  DEL   PROBLEMA    los  materiales  se   encuentran muy fácil    se  requiere  mano  de   obra experimentada       los  materiales  son  en  su   mayoría  naturales    \n33       7.  PROPUESTA DE VIVIENDA                                                            \n34         \n35       9. CONCLUSIONES       Las  técnicas  con  las  cuales  se  elaboraban  viviendas  con  anterioridad  no   perjudican  al  medio  ambiente  ni al  entorno,  debido  q  que  son  los  materiales  mas   cercanos que sirven para la elaboración de dicha obra.        El costo en trasporte y materiales es  más   barato debido a que muchos de ellos se   obtienen de lo que se encuentre cerca        El tiempo de construcción se reduce hasta la mitad  de tiempo que un sistema de   construcción tradicional        Los  sistemas  de  construcción  varían  según  la  región  en  donde    se  encue ntre    debido a que las condiciones climáticas  dicen que sistema de construcción es el   adecuado para la elaboración de  una vivienda.         \n36       10. REFERENCIAS BIBLIOGRAFICAS         Norma sismo resistente 2010; Titulo E, Titulo G       Norma  Técnica  Colombiana  NTC  2500  Uso  d e  la  Madera  en  la   Construcción, publicada por el ICONTEC       Robledo  castillo,  Jorge  enrique  (1993)  (en  español).  [[1]  un  siglo  de   bahareque  en  el  antiguo  caldas].  Bogotá:  el  ancora  editores.  pp.  90.  isbn   9589012876.       Proyecto nacional del bambú, pnb. [3]       Ramírez  Sendoya,  Pedro  José  (1952).  Diccionario  indio  del  gran  Tolima.   Editorial minerva ltda. r498.6 r15d 19 ed. (biblioteca Luis ángel Arango) [4].       Guía  de  construcción  bahareque:  Wilfredo  Carazas  ,Aedo  Alba  Rivero   Olmos  Ediciones  CRATerre  Maison  Levrat,     Parc  Fallavier,  BP  53F - 38092   Villefontaine Cedex, Francia Agosto 2002.       CIBERGRAFIA    http://www.youtube.com/watch?v=nx2y0 - p5xcy    http://www.youtube.com/watch?v=8ocmteovw9c    http://www.youtube.com/watch?v=qu7asjulrze    http://www.virtual.unal.edu.co/cursos/sedes /manizales/4080020/lecciones/capitulo  %203/GUADUA.HTM) 05/03/2013)    http://galeanomarin.blogspot.com/2008/10/bahareque.html    http://tapiapisada.blogspot.com/2008/05/tapia - pisada.html    http://zuarq.blogspot.com/2010/11/diseno - y - construccion - de - arquitectura.html    http://www.rinconesdelatlantico.com/num2/la_arquitectura_de_tierra.html    http://www.colarte.com/colarte/conspintores.asp?idartista=7424    http://ideasparaconstruir.com/n/2857/materiales - de - construccion - sustentables.html    http://citywiki.ugr.es/wiki/Arquitectu ra_y_sostenibilidad/los_cinco_pilares_de_la_ar  quitectura_sostenible    http://www.cedodal.com/?page_id=20   \n37       LISTA DE TABLAS       Tabla 1. c ategorías de análisis   deriva de la pregunta y núcleo problemático    LISTA DE FIGURAS       Figura 1.D iseño  metodológico preliminar       Figura 2   proyecto arquitectónico       Figura 3  detalles constructivo       \n";
+    const PDF_NAME = "Tecnicas_Ancestrales_Construccion_Lopez_2014.pdf";
+    const CHATBOT_THEME = " JHONNY Tecnicas_Ancestrales_Construccion";
+    const PDF2_TEXT_EMBEDDED = "";
+    const PDF2_NAME_EMBEDDED = "";
+    const MODEL = "gemini-search";
+    const PROPOSED_QUESTIONS = ["¿Cuál es la justificación principal para el estudio de las técnicas ancestrales de construcción y por qué se están perdiendo?","¿Cómo las culturas prehispánicas diferenciaban el uso de materiales para templos y viviendas?","¿Qué factores influyen en la elección del método de construcción en las técnicas ancestrales?","¿Cuáles son los materiales vegetales y locales más comunes utilizados en la construcción con bahareque y cómo se emplean en las divisiones y paredes?","Explica el proceso de construcción con tapia o tapial y sus beneficios ambientales.","¿Qué características definen a la guadua como material de construcción y cuál es su ventaja en términos de crecimiento y resistencia comparada con la madera?","¿Cómo se han adaptado las técnicas de construcción con bahareque a lo largo del tiempo y en qué regiones de Colombia ha tenido especial relevancia?","Describe las partes de la guadua y sus características morfológicas relevantes para la construcción.","¿Cuáles son las ventajas y desventajas de la técnica de tapia pisada en comparación con otros métodos constructivos ancestrales?","¿De qué manera el diseño metodológico preliminar se adapta a los recursos y la cultura de una región específica?","¿Qué tendencias actuales y pronósticos existen sobre el uso de materiales y técnicas de construcción ancestrales?","¿Cuáles son las conclusiones principales sobre el impacto ambiental, el costo y el tiempo de construcción de las técnicas ancestrales en comparación con los métodos tradicionales?"];
+    const INITIAL_PALETTE = {"primaryColor":"#e830e5","secondaryColor":"#ed59ea","bgColor":"#ffffff","textColor":"#111827","cardBgColor":"#ffffff","cardBorderColor":"#d1d5db","inputBgColor":"#ffffff","inputBorderColor":"#cbd5e1","chatBubbleBotBg":"#f3f4f6","chatBubbleBotText":"#111827","chatBubbleUserBg":"#e830e5","chatBubbleUserText":"#f8fafc","headerBorderColor":"#d1d5db","systemMessageBg":"#fef3c7","systemMessageText":"#92400e"};
+
+    let pdf2Text = PDF2_TEXT_EMBEDDED;
+    let pdf2Name = PDF2_NAME_EMBEDDED;
+    let isProcessing = false;
+    let conversationHistory = [];
+
+    const BACKEND_BASE = 'https://node.proyectodescartes.org';
+    function extractTextFromBackendResponse(raw) {
+        if (raw == null) return '';
+        const s = String(raw).trim();
+        if (!s) return '';
+        try {
+            const j = JSON.parse(s);
+            if (Array.isArray(j)) return JSON.stringify(j);
+            if (j && typeof j === 'object') {
+                const c = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+                if (typeof c === 'string') return c.trim();
+                if (typeof j.content === 'string') return j.content.trim();
+                if (typeof j.text === 'string') return j.text.trim();
+            }
+            if (typeof j === 'string') return j;
+        } catch (e) {}
+        return s;
+    }
+    async function postBackendText(payload) {
+        const body = { model: payload.model || 'openai-fast', prompt: payload.prompt };
+        if (payload.system) body.system = payload.system;
+        if (payload.json) body.json = true;
+        const res = await fetch(BACKEND_BASE + '/api/ia/text', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const raw = await res.text();
+        if (!res.ok) throw new Error('Error de API: ' + res.status + ' ' + res.statusText + '. ' + raw.substring(0, 200));
+        return extractTextFromBackendResponse(raw);
+    }
+
+    const chatDisplay = document.getElementById('chat-display');
+    const questionInput = document.getElementById('question-input');
+    const sendButton = document.getElementById('send-button');
+    const sendButtonText = document.getElementById('send-button-text');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const themeBtn = document.getElementById('theme-btn');
+    const paletteBtn = document.getElementById('palette-btn');
+    const pdf2Upload = document.getElementById('pdf2-upload');
+    const pdf2NameDisplay = document.getElementById('pdf2-name');
+    const pdf2StatusDisplay = document.getElementById('pdf2-status');
+    const questionsSelector = document.getElementById('questions-selector');
+
+    function getAvatarUrl(type) {
+        const fallbackSvg = function(letter) {
+            return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#6c757d"/><text x="50" y="68" text-anchor="middle" fill="#fff" font-size="44" font-family="system-ui,sans-serif">' + letter + '</text></svg>');
+        };
+        return type === 'bot' ? fallbackSvg('B') : fallbackSvg('U');
+    }
+
+    PROPOSED_QUESTIONS.forEach(function(q, i) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        const label = q.length > 72 ? q.substring(0, 69) + '...' : q;
+        opt.textContent = label;
+        opt.title = q;
+        questionsSelector.appendChild(opt);
+    });
+    questionsSelector.addEventListener('change', function(e) {
+        const v = e.target.value;
+        if (v !== '') {
+            questionInput.value = PROPOSED_QUESTIONS[Number(v)];
+            questionInput.focus();
+            questionsSelector.value = '';
+        }
+    });
+
+    // Theme and palette
+    let currentTheme = localStorage.getItem('theme') || 'light';
+    let currentPalette = null;
+
+    function hexToRgb(hex) {
+        const normalized = String(hex || '#000000').replace('#', '');
+        const full = normalized.length === 3 ? normalized.split('').map(ch => ch + ch).join('') : normalized;
+        const value = parseInt(full, 16);
+        return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 };
+    }
+    function rgbToHex(r, g, b) {
+        const toHex = (value) => Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, '0');
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+    function mixColors(colorA, colorB, amount) {
+        const a = hexToRgb(colorA);
+        const b = hexToRgb(colorB);
+        return rgbToHex(a.r + (b.r - a.r) * amount, a.g + (b.g - a.g) * amount, a.b + (b.b - a.b) * amount);
+    }
+    function getLuminance(hex) {
+        const { r, g, b } = hexToRgb(hex);
+        const toLinear = (value) => {
+            const s = value / 255;
+            return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+        };
+        return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+    }
+    function hslToHex(h, s, l) {
+        const hue = ((h % 360) + 360) % 360;
+        const saturation = Math.max(0, Math.min(100, s)) / 100;
+        const lightness = Math.max(0, Math.min(100, l)) / 100;
+        const hueToRgb = (p, q, t) => {
+            let temp = t;
+            if (temp < 0) temp += 1;
+            if (temp > 1) temp -= 1;
+            if (temp < 1 / 6) return p + (q - p) * 6 * temp;
+            if (temp < 1 / 2) return q;
+            if (temp < 2 / 3) return p + (q - p) * (2 / 3 - temp) * 6;
+            return p;
+        };
+        const q = lightness < 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+        const p = 2 * lightness - q;
+        const r = hueToRgb(p, q, hue / 360 + 1 / 3);
+        const g = hueToRgb(p, q, hue / 360);
+        const b = hueToRgb(p, q, hue / 360 - 1 / 3);
+        return rgbToHex(r * 255, g * 255, b * 255);
+    }
+    function getReadableTextColor(bgColor) { return getLuminance(bgColor) > 0.56 ? '#111827' : '#f8fafc'; }
+    function generatePalette() {
+        const hue = Math.floor(Math.random() * 360);
+        const bg = hslToHex(hue, 45 + Math.floor(Math.random() * 20), 16 + Math.floor(Math.random() * 70));
+        const text = getReadableTextColor(bg);
+        const isDark = getLuminance(bg) < 0.5;
+        const accent = hslToHex((hue + 35 + Math.floor(Math.random() * 60)) % 360, 80, isDark ? 55 : 45);
+        const card = isDark ? mixColors(bg, '#ffffff', 0.08) : mixColors(bg, '#000000', 0.05);
+        const border = isDark ? mixColors(card, '#ffffff', 0.18) : mixColors(card, '#000000', 0.12);
+        const input = isDark ? mixColors(card, '#ffffff', 0.07) : mixColors(card, '#000000', 0.04);
+        const inputBorder = isDark ? mixColors(border, '#ffffff', 0.12) : mixColors(border, '#000000', 0.1);
+        const botBg = isDark ? mixColors(bg, '#ffffff', 0.12) : mixColors(bg, '#000000', 0.06);
+        return {
+            bgColor: bg,
+            textColor: text,
+            cardBgColor: card,
+            cardBorderColor: border,
+            inputBgColor: input,
+            inputBorderColor: inputBorder,
+            chatBubbleBotBg: botBg,
+            chatBubbleBotText: text,
+            chatBubbleUserBg: accent,
+            chatBubbleUserText: getReadableTextColor(accent),
+            primaryColor: accent,
+            secondaryColor: isDark ? mixColors(accent, '#ffffff', 0.2) : mixColors(accent, '#000000', 0.2),
+            headerBorderColor: border,
+            systemMessageBg: isDark ? mixColors(bg, '#fde68a', 0.2) : mixColors(bg, '#fde68a', 0.28),
+            systemMessageText: isDark ? '#fef3c7' : '#78350f'
+        };
+    }
+    function buildThemePalette(theme, palette) {
+        const base = palette || {
+            primaryColor: '#2563eb',
+            secondaryColor: '#6b7280',
+            bgColor: '#ffffff',
+            textColor: '#1f2937',
+            cardBgColor: '#ffffff',
+            cardBorderColor: '#d1d5db',
+            inputBgColor: '#ffffff',
+            inputBorderColor: '#cbd5e1',
+            chatBubbleBotBg: '#f3f4f6',
+            chatBubbleBotText: '#1f2937',
+            chatBubbleUserBg: '#2563eb',
+            chatBubbleUserText: '#ffffff',
+            headerBorderColor: '#e5e7eb',
+            systemMessageBg: '#fef3c7',
+            systemMessageText: '#92400e'
+        };
+        const isDark = theme === 'dark';
+        const bgColor = isDark ? mixColors(base.bgColor || '#ffffff', '#000000', 0.72) : '#ffffff';
+        const textColor = getReadableTextColor(bgColor);
+        const cardBgColor = isDark ? mixColors(bgColor, '#ffffff', 0.08) : '#ffffff';
+        const cardBorderColor = isDark ? mixColors(cardBgColor, '#ffffff', 0.16) : '#d1d5db';
+        const inputBgColor = isDark ? mixColors(cardBgColor, '#ffffff', 0.06) : '#ffffff';
+        const inputBorderColor = isDark ? mixColors(cardBorderColor, '#ffffff', 0.12) : '#cbd5e1';
+        const chatBubbleBotBg = isDark ? mixColors(bgColor, '#ffffff', 0.12) : '#f3f4f6';
+        const chatBubbleBotText = textColor;
+        const headerBorderColor = cardBorderColor;
+        const systemMessageBg = isDark ? mixColors(bgColor, '#fde68a', 0.2) : '#fef3c7';
+        const systemMessageText = isDark ? '#fef3c7' : '#92400e';
+        return {
+            ...base,
+            bgColor,
+            textColor,
+            cardBgColor,
+            cardBorderColor,
+            inputBgColor,
+            inputBorderColor,
+            chatBubbleBotBg,
+            chatBubbleBotText,
+            headerBorderColor,
+            systemMessageBg,
+            systemMessageText
+        };
+    }
+    function setPaletteVariables(target, palette) {
+        if (!palette) return;
+        target.style.setProperty('--primary', palette.primaryColor || '#007bff');
+        target.style.setProperty('--secondary', palette.secondaryColor || '#6c757d');
+        target.style.setProperty('--bg', palette.bgColor || '#f8f9fa');
+        target.style.setProperty('--text', palette.textColor || '#343a40');
+        target.style.setProperty('--card', palette.cardBgColor || '#ffffff');
+        target.style.setProperty('--border', palette.cardBorderColor || '#dddddd');
+        target.style.setProperty('--input', palette.inputBgColor || '#ffffff');
+        target.style.setProperty('--iborder', palette.inputBorderColor || '#cccccc');
+        target.style.setProperty('--bot-bg', palette.chatBubbleBotBg || '#e9ecef');
+        target.style.setProperty('--bot-text', palette.chatBubbleBotText || '#343a40');
+        target.style.setProperty('--user-bg', palette.chatBubbleUserBg || '#007bff');
+        target.style.setProperty('--user-text', palette.chatBubbleUserText || '#ffffff');
+        target.style.setProperty('--sys-bg', palette.systemMessageBg || '#fff3cd');
+        target.style.setProperty('--sys-text', palette.systemMessageText || '#856404');
+    }
+    function applyPalette(palette) {
+        currentPalette = palette;
+        applyTheme(currentTheme);
+        localStorage.setItem('downloaded-palette', JSON.stringify(palette));
+    }
+    function applyTheme(t) {
+        currentTheme = t;
+        document.body.classList.toggle('dark-mode', t === 'dark');
+        themeBtn.textContent = t === 'dark' ? '☀️ Tema' : '🌙 Tema';
+        const effectivePalette = buildThemePalette(t, currentPalette);
+        setPaletteVariables(document.body, effectivePalette);
+        setPaletteVariables(document.documentElement, effectivePalette);
+        document.body.style.backgroundColor = effectivePalette.bgColor;
+        document.body.style.color = effectivePalette.textColor;
+        localStorage.setItem('theme', t);
+    }
+    themeBtn.addEventListener('click', () => { const n = currentTheme === 'dark' ? 'light' : 'dark'; applyTheme(n); });
+    paletteBtn.addEventListener('click', () => { applyPalette(generatePalette()); });
+    const savedPalette = JSON.parse(localStorage.getItem('downloaded-palette') || 'null');
+    if (savedPalette) { applyPalette(savedPalette); }
+    else if (INITIAL_PALETTE) { applyPalette(INITIAL_PALETTE); }
+    else { applyPalette(generatePalette()); }
+    applyTheme(currentTheme);
+
+    // Second PDF (embedded or user-loaded)
+    if (pdf2Text) { pdf2NameDisplay.textContent = pdf2Name + ' (incluido)'; pdf2StatusDisplay.textContent = '"' + pdf2Name + '" ya incluido.'; pdf2StatusDisplay.style.color = 'var(--success)'; }
+    pdf2Upload.addEventListener('change', async (ev) => {
+        const file = ev.target.files[0]; if (!file) return;
+        if (!(file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+            pdf2StatusDisplay.textContent = 'No es un PDF válido.'; pdf2StatusDisplay.style.color = 'var(--danger)'; return;
+        }
+        pdf2Name = file.name; pdf2NameDisplay.textContent = file.name;
+        pdf2StatusDisplay.textContent = 'Procesando...'; pdf2StatusDisplay.style.color = 'var(--warning)';
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(e.target.result) }).promise;
+                let text = '';
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const tc = await page.getTextContent();
+                    tc.items.forEach(item => text += item.str + ' ');
+                    text += '\n';
+                }
+                pdf2Text = text;
+                pdf2StatusDisplay.textContent = '"' + pdf2Name + '" cargado.'; pdf2StatusDisplay.style.color = 'var(--success)';
+                addMsg('Segundo documento "' + pdf2Name + '" listo.', 'system');
+            } catch(err) { pdf2StatusDisplay.textContent = 'Error al procesar.'; pdf2StatusDisplay.style.color = 'var(--danger)'; pdf2Text = ''; }
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+    function dismissThinkingAsSystem(text, asError) {
+        const el = document.getElementById('thinking-msg');
+        if (!el) return;
+        el.className = 'system-message' + (asError ? ' error' : '');
+        el.textContent = text;
+        el.removeAttribute('id');
+    }
+
+    function addMsg(message, sender, isThinking = false) {
+        const el = document.createElement('div');
+        el.classList.add(sender === 'user' ? 'user-message' : sender.includes('system') ? 'system-message' : 'bot-message');
+        if (sender.includes('error')) el.classList.add('error');
+        if (sender === 'bot' && !isThinking) {
+            const processedMessage = message.replace(/\[/g, '\\[').replace(/\]/g, '\\]').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+            const html = marked.parse ? marked.parse(processedMessage) : processedMessage;
+            const botAvatarUrl = getAvatarUrl('bot');
+            el.innerHTML = '<div class="message"><img class="avatar-img" src="' + botAvatarUrl + '" alt=""><div class="message-bubble bot-bubble"><strong>Chatbot:</strong><div class="tex2jax_process" style="margin-top:5px;">' + html + '</div><div style="margin-top:10px;font-size:.8em;color:var(--secondary);font-style:italic;">Modelo: ' + MODEL + '</div></div></div>';
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise([el]).catch(err => console.error(err));
+        } else if (sender === 'bot') {
+            const botAvatarUrl = getAvatarUrl('bot');
+            el.innerHTML = '<div class="message"><img class="avatar-img" src="' + botAvatarUrl + '" alt=""><div class="message-bubble bot-bubble"><strong>Chatbot:</strong> <span class="thinking-animation">' + message + '</span></div></div>';
+            el.id = 'thinking-msg';
+        } else if (sender === 'user') {
+            const userAvatarUrl = getAvatarUrl('user');
+            el.innerHTML = '<div class="message user-message"><div class="message-bubble user-bubble"></div><img class="avatar-img" src="' + userAvatarUrl + '" alt=""></div>';
+            el.querySelector('.user-bubble').textContent = message;
+        } else {
+            el.textContent = message;
+        }
+        chatDisplay.appendChild(el); chatDisplay.scrollTop = chatDisplay.scrollHeight;
+    }
+    function updateLastMsg(message) {
+        const el = document.getElementById('thinking-msg');
+        const botAvatarUrl = getAvatarUrl('bot');
+        const processedMessage = message.replace(/\[/g, '\\[').replace(/\]/g, '\\]').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+        const html = marked.parse ? marked.parse(processedMessage) : processedMessage;
+        if (el) {
+            el.className = 'bot-message';
+            el.innerHTML = '<div class="message"><img class="avatar-img" src="' + botAvatarUrl + '" alt=""><div class="message-bubble bot-bubble"><strong>Chatbot:</strong><div class="tex2jax_process" style="margin-top:5px;">' + html + '</div><div style="margin-top:10px;font-size:.8em;color:var(--secondary);font-style:italic;">Modelo: ' + MODEL + '</div></div></div>';
+            el.removeAttribute('id');
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise([el]).catch(err => console.error(err));
+        } else addMsg(message, 'bot');
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+    }
+
+    async function sendQuestion() {
+        const question = questionInput.value.trim();
+        if (!question || isProcessing) return;
+        addMsg(question, 'user'); questionInput.value = '';
+        conversationHistory.push({ role: 'user', content: question });
+        isProcessing = true; sendButton.disabled = true; questionInput.disabled = true;
+        loadingSpinner.style.display = 'inline-block'; sendButtonText.textContent = 'Enviando';
+        addMsg('Pensando...', 'bot', true);
+        const maxLen = 800000;
+        const t1 = PDF_TEXT.length > maxLen ? PDF_TEXT.substring(0, maxLen) + '... (truncado)' : PDF_TEXT;
+        const systemInstructions = 'Eres un asistente que SOLO debe ayudar con preguntas relacionadas con el contenido del/los documento(s) PDF de esta sesión y con el tema del chatbot: «' + CHATBOT_THEME + '». ' +
+            'No respondas temas claramente ajenos (vida personal sin relación, otros libros o materiales no incluidos, programación o tareas arbitrarias no vinculadas al texto, cotilleo, política o entretenimiento sin conexión con el PDF, etc.). ' +
+            'Si la pregunta no guarda relación razonable con el documento ni con ese tema, responde ÚNICAMENTE con UNA línea que empiece exactamente con [FUERA_DE_ALCANCE] seguida de una frase breve en español. ' +
+            'Para preguntas válidas, fundamenta la respuesta en los textos del documento; si falta información en el PDF, dilo con claridad.';
+
+        let prompt = 'Instrucciones del sistema:\n' + systemInstructions + '\n\n';
+        prompt += 'Documento 1 ("' + PDF_NAME + '"): "' + t1 + '"\n\n';
+        if (pdf2Text) {
+            const t2 = pdf2Text.length > maxLen ? pdf2Text.substring(0, maxLen) + '... (truncado)' : pdf2Text;
+            prompt += 'Documento 2 ("' + pdf2Name + '"): "' + t2 + '"\n\n';
+        }
+        prompt += '(Instrucción: Para expresiones matemáticas, utiliza SÓLO el formato $$...$$ para bloque y $...$ para texto en línea.)\n\n';
+
+        // Incluir el historial completo de la conversación para dar contexto al modelo
+        var historyBlock = conversationHistory.slice(0, -1).map(function(turn, index) {
+            var speaker = turn.role === 'user' ? 'Usuario' : 'Asistente';
+            return '[Turno ' + (index + 1) + '] ' + speaker + ': ' + turn.content;
+        }).join('\n\n');
+        if (historyBlock) {
+            prompt += 'Conversación previa (historial del chat):\n' + historyBlock + '\n\n';
+        }
+
+        prompt += 'Pregunta: ' + question + '\n\nRespuesta:';
+        try {
+            const raw = (await postBackendText({
+                model: MODEL,
+                prompt: prompt,
+                system: systemInstructions
+            }) || '').trim();
+            if (raw.startsWith('[FUERA_DE_ALCANCE]')) {
+                const texto = raw.replace('[FUERA_DE_ALCANCE]', '').trim();
+                conversationHistory.push({ role: 'assistant', content: texto });
+                dismissThinkingAsSystem(texto, true);
+            } else {
+                conversationHistory.push({ role: 'assistant', content: raw });
+                updateLastMsg(raw || 'La IA no proporcionó una respuesta.');
+            }
+        } catch(err) { updateLastMsg('Lo siento, ocurrió un error: ' + err.message); }
+        finally {
+            isProcessing = false; sendButton.disabled = false; questionInput.disabled = false;
+            loadingSpinner.style.display = 'none'; sendButtonText.textContent = 'Enviar'; questionInput.focus();
+        }
+    }
+    function escapeHtml(s) {
+        if (s === undefined || s === null) return '';
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getSessionHTML() {
+        const clone = chatDisplay.cloneNode(true);
+        const exportStyles =
+            'body{font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;line-height:1.65;padding:28px;color:#333;max-width:880px;margin:0 auto;background:#fafafa;}' +
+            'h1{color:#007bff;font-size:1.45em;margin-bottom:6px;}' +
+            '.meta{color:#444;margin:6px 0;font-size:.95em;}' +
+            'hr{border:none;border-top:1px solid #dee2e6;margin:22px 0;}' +
+            '.chat-export{padding:4px 0;}' +
+            '.chat-export .user-message,.chat-export .bot-message,.chat-export .system-message{margin-bottom:18px;}' +
+            '.chat-export .system-message{text-align:center;color:#555;font-style:italic;padding:10px 14px;background:#fff3cd;border-radius:10px;border:1px solid #ffeaa7;}' +
+            '.chat-export .system-message.error{background:#f8d7da;color:#721c24;border-color:#f5c6cb;}' +
+            '.chat-export .message{display:flex;align-items:flex-end;gap:12px;}' +
+            '.chat-export .message.user-message{flex-direction:row-reverse;}' +
+            '.chat-export .avatar-img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid #e0e0e0;}' +
+            '.chat-export .message-bubble{padding:12px 16px;border-radius:18px;max-width:78%;box-shadow:0 1px 2px rgba(0,0,0,.06);}' +
+            '.chat-export .user-bubble{background:#007bff;color:#fff;}' +
+            '.chat-export .bot-bubble{background:#e9ecef;color:#212529;}' +
+            '.chat-export .bot-bubble strong{color:#007bff;}' +
+            '.chat-export .bot-bubble p{margin:0 0 10px;}.chat-export .bot-bubble p:last-child{margin:0;}' +
+            '.chat-export pre{background:#2d2d2d;color:#f8f8f2;padding:12px;border-radius:8px;overflow-x:auto;font-size:.9em;}' +
+            '.chat-export code{background:#eee;padding:2px 6px;border-radius:4px;font-size:.9em;}' +
+            '.chat-export ul,.chat-export ol{margin:8px 0;padding-left:22px;}';
+        return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sesión de chat</title><style>' + exportStyles + '</style></head><body>' +
+            '<h1>Sesión de chat</h1>' +
+            '<p class="meta"><strong>Documento:</strong> ' + escapeHtml(PDF_NAME) + '</p>' +
+            '<p class="meta"><strong>Tema del chatbot:</strong> ' + escapeHtml(CHATBOT_THEME) + '</p>' +
+            '<p class="meta"><strong>Modelo:</strong> ' + escapeHtml(MODEL) + '</p>' +
+            '<hr><div class="chat-export">' + clone.innerHTML + '</div></body></html>';
+    }
+
+    function downloadSessionHtml() {
+        const blob = new Blob([getSessionHTML()], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Sesion_Chat_' + Date.now() + '.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function processHtmlToDocx(htmlContent) {
+        const paragraphs = [];
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlContent;
+        const elements = tempDiv.children;
+        if (elements.length === 0 && htmlContent.replace(/\s/g, '').length > 0) {
+            return [new docx.Paragraph({ text: tempDiv.textContent || htmlContent, spacing: { after: 200 } })];
+        }
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            const tagName = element.tagName.toLowerCase();
+            const text = element.textContent || element.innerText || '';
+            if (tagName === 'h1' || tagName === 'h2') {
+                paragraphs.push(new docx.Paragraph({
+                    text: text,
+                    heading: tagName === 'h1' ? docx.HeadingLevel.HEADING_1 : docx.HeadingLevel.HEADING_2,
+                    spacing: { before: 400, after: 200 }
+                }));
+            } else if (tagName === 'h3') {
+                paragraphs.push(new docx.Paragraph({
+                    text: text,
+                    heading: docx.HeadingLevel.HEADING_3,
+                    spacing: { before: 300, after: 200 }
+                }));
+            } else if (tagName === 'ul' || tagName === 'ol') {
+                const listItems = element.querySelectorAll('li');
+                listItems.forEach(function(li) {
+                    paragraphs.push(new docx.Paragraph({
+                        text: li.textContent,
+                        bullet: { level: 0 },
+                        spacing: { after: 100 }
+                    }));
+                });
+            } else if (tagName === 'p') {
+                const textRuns = [];
+                if (element.children.length === 0) {
+                    textRuns.push(new docx.TextRun({ text: text }));
+                } else {
+                    processInlineElements(element, textRuns);
+                }
+                paragraphs.push(new docx.Paragraph({
+                    children: textRuns.length > 0 ? textRuns : [new docx.TextRun({ text: text })],
+                    spacing: { after: 200 }
+                }));
+            } else if (tagName === 'blockquote') {
+                paragraphs.push(new docx.Paragraph({
+                    text: text,
+                    italics: true,
+                    indent: { left: 720 },
+                    spacing: { after: 200 },
+                    border: { left: { color: 'CCCCCC', size: 6, style: docx.BorderStyle.SINGLE } }
+                }));
+            } else if (tagName === 'code') {
+                paragraphs.push(new docx.Paragraph({
+                    text: text,
+                    font: 'Courier New',
+                    shading: { type: docx.ShadingType.SOLID, color: 'F5F5F5' },
+                    spacing: { after: 100 }
+                }));
+            } else if (tagName === 'pre') {
+                paragraphs.push(new docx.Paragraph({
+                    text: text,
+                    font: 'Courier New',
+                    shading: { type: docx.ShadingType.SOLID, color: '2D2D2D' },
+                    color: 'FFFFFF',
+                    spacing: { after: 200 }
+                }));
+            } else {
+                paragraphs.push(new docx.Paragraph({ text: text, spacing: { after: 200 } }));
+            }
+        }
+        return paragraphs;
+    }
+
+    function processInlineElements(element, textRuns) {
+        for (let j = 0; j < element.childNodes.length; j++) {
+            const node = element.childNodes[j];
+            if (node.nodeType === Node.TEXT_NODE) {
+                textRuns.push(new docx.TextRun({ text: node.textContent }));
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                const tagName = node.tagName.toLowerCase();
+                const nodeText = node.textContent || '';
+                if (tagName === 'strong' || tagName === 'b') {
+                    textRuns.push(new docx.TextRun({ text: nodeText, bold: true }));
+                } else if (tagName === 'em' || tagName === 'i') {
+                    textRuns.push(new docx.TextRun({ text: nodeText, italics: true }));
+                } else if (tagName === 'u') {
+                    textRuns.push(new docx.TextRun({ text: nodeText, underline: {} }));
+                } else if (tagName === 'code') {
+                    textRuns.push(new docx.TextRun({
+                        text: nodeText,
+                        font: 'Courier New',
+                        shading: { type: docx.ShadingType.SOLID, color: 'F0F0F0' }
+                    }));
+                } else if (tagName === 'a') {
+                    textRuns.push(new docx.TextRun({ text: nodeText, color: '0066CC', underline: {} }));
+                } else {
+                    processInlineElements(node, textRuns);
+                }
+            }
+        }
+    }
+
+    function downloadSessionWord() {
+        if (typeof docx === 'undefined' || typeof saveAs === 'undefined') {
+            alert('Las librerías para exportar Word aún se están cargando. Espera unos segundos e inténtalo de nuevo.');
+            return;
+        }
+        const chatMessages = chatDisplay.querySelectorAll('.user-message, .bot-message, .system-message');
+        const children = [];
+        children.push(new docx.Paragraph({
+            text: 'Sesión de Chat (documento PDF)',
+            heading: docx.HeadingLevel.HEADING_1,
+            alignment: docx.AlignmentType.CENTER,
+            spacing: { after: 400 }
+        }));
+        children.push(new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: 'Documento: ', bold: true }),
+                new docx.TextRun({ text: PDF_NAME })
+            ],
+            spacing: { after: 100 }
+        }));
+        children.push(new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: 'Tema del chatbot: ', bold: true }),
+                new docx.TextRun({ text: CHATBOT_THEME })
+            ],
+            spacing: { after: 100 }
+        }));
+        children.push(new docx.Paragraph({
+            children: [
+                new docx.TextRun({ text: 'Modelo: ', bold: true }),
+                new docx.TextRun({ text: MODEL })
+            ],
+            spacing: { after: 200 }
+        }));
+        children.push(new docx.Paragraph({
+            text: '________________________________________________________________________________________________',
+            spacing: { after: 400 }
+        }));
+
+        chatMessages.forEach(function(msg) {
+            if (msg.classList.contains('system-message')) {
+                children.push(new docx.Paragraph({
+                    text: msg.textContent,
+                    italics: true,
+                    alignment: docx.AlignmentType.CENTER,
+                    spacing: { after: 200 },
+                    color: '666666'
+                }));
+            } else if (msg.classList.contains('user-message')) {
+                const ub = msg.querySelector('.user-bubble');
+                const userText = ub ? ub.textContent.trim() : msg.textContent.replace(/^Usuario:\s*/i, '').trim();
+                children.push(new docx.Paragraph({
+                    children: [
+                        new docx.TextRun({ text: 'Usuario: ', bold: true, color: '0066CC' }),
+                        new docx.TextRun({ text: userText })
+                    ],
+                    spacing: { after: 200 },
+                    alignment: docx.AlignmentType.RIGHT,
+                    shading: { type: docx.ShadingType.SOLID, color: 'E3F2FD' }
+                }));
+            } else if (msg.classList.contains('bot-message')) {
+                const botBubble = msg.querySelector('.message-bubble');
+                if (botBubble) {
+                    const contentDiv = botBubble.querySelector('.tex2jax_process') || botBubble.querySelector('div[style*="margin-top:5px"]');
+                    const modelInfoEl = botBubble.querySelector('div[style*="font-size:0.8em"]');
+                    const modelInfo = modelInfoEl ? modelInfoEl.textContent : '';
+                    if (contentDiv) {
+                        const formatted = processHtmlToDocx(contentDiv.innerHTML);
+                        formatted.forEach(function(paragraph) { children.push(paragraph); });
+                        if (modelInfo) {
+                            children.push(new docx.Paragraph({
+                                children: [new docx.TextRun({ text: modelInfo, italics: true, size: 20, color: '666666' })],
+                                spacing: { after: 200 }
+                            }));
+                        }
+                    } else {
+                        let plain = botBubble.textContent || '';
+                        if (modelInfo) plain = plain.split(modelInfo).join('').trim();
+                        plain = plain.replace(/^Chatbot:\s*/i, '').trim();
+                        children.push(new docx.Paragraph({ text: plain, spacing: { after: 200 } }));
+                    }
+                }
+            }
+        });
+
+        const doc = new docx.Document({
+            sections: [{ properties: {}, children: children }]
+        });
+        docx.Packer.toBlob(doc).then(function(blob) {
+            saveAs(blob, 'Sesion_Chat_' + Date.now() + '.docx');
+        });
+    }
+
+    sendButton.addEventListener('click', sendQuestion);
+    questionInput.addEventListener('keypress', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendQuestion(); } });
+    document.getElementById('download-html-session-btn').addEventListener('click', downloadSessionHtml);
+    document.getElementById('download-word-session-btn').addEventListener('click', downloadSessionWord);
+    addMsg('Documento "' + PDF_NAME + '" listo. Solo respondo preguntas sobre este contenido o el tema «' + CHATBOT_THEME + '». ¡Puedes empezar!', 'system');
+    questionInput.focus();
+</script>
+</body>
+</html>
