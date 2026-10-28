@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escritor de artículos</title>
+    <style>
+    :root {
+        --bg-color: #1a1a2e;
+        --primary-color: #16213e;
+        --secondary-color: #0f3460;
+        --accent-color: #7eb8ff;         /* azul-cian brillante — contraste AAA sobre fondos oscuros */
+        --text-color: #e8e8f0;
+        --header-text-color: #ffffff;
+        --border-color: #4a4a6a;
+        --input-bg-color: #2c2c44;
+        --button-hover-bg: #a0caff;
+        --report-bg: #1e1e36;
+        --error-color: #ff6b6b;
+        --success-color: #7bed9f;
+        --success-color-dark: #2ed573;
+        /* --- COLOR DE ENLACE MEJORADO --- */
+        --source-link-color: #5dd6f8;    /* cian vivo — destaca sobre fondo oscuro */
+        --heading-h2-color: #ffffff;     /* blanco puro para títulos principales */
+        --heading-h3-color: #c4d8ff;     /* lavanda clara para subtítulos */
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    header {
+        background-color: var(--primary-color);
+        color: var(--header-text-color);
+        padding: 1rem 2rem;
+        text-align: center;
+        border-bottom: 3px solid var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    main {
+        flex-grow: 1;
+        padding: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .tagline {
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        margin-bottom: 2rem;
+    }
+    .input-section {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        align-items: center;
+        flex-wrap: wrap; /* Permitir ajuste en móviles */
+    }
+    #topicInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #topicInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL SELECTOR DE MODELO --- */
+    #modelSelect {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        cursor: pointer;
+        min-width: 150px;
+    }
+    #modelSelect:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL INPUT DE PALABRAS --- */
+    #wordCountInput {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        width: 90px;
+    }
+    #wordCountInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* -------------------------------------- */
+    #researchButton {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--accent-color);
+        color: var(--header-text-color);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    #researchButton:hover:not(:disabled) {
+        background-color: var(--button-hover-bg);
+    }
+    #researchButton:disabled {
+        background-color: var(--secondary-color);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    .status-container {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: var(--secondary-color);
+        border-radius: 5px;
+        border-left: 5px solid var(--accent-color);
+        min-height: 20px;
+    }
+    .status-update { color: var(--text-color); margin: 0.5rem 0; font-style: italic; }
+    .status-update span.dot-container { display: inline-block; width: 30px; }
+    .status-update span.dot { display: inline-block; animation: blink 1.4s infinite both; opacity: 0; margin: 0 1px; }
+    .status-update span.dot:nth-child(1) { animation-delay: 0s; }
+    .status-update span.dot:nth-child(2) { animation-delay: .2s; }
+    .status-update span.dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+    .status-final { color: var(--success-color); font-weight: bold; margin: 0.5rem 0; }
+    .report-container {
+        background-color: var(--report-bg);
+        padding: 1.5rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        min-height: 100px;
+        max-height: 60vh;
+        overflow-y: auto;
+        color: var(--text-color);
+    }
+    .report-container h2 { color: var(--heading-h2-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 0.5rem; margin-top: 0; text-shadow: 0 0 18px rgba(126,184,255,0.25); }
+    .report-container h3 { color: var(--heading-h3-color); margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 1px dashed rgba(196,216,255,0.3); padding-bottom: 0.3rem; }
+    .report-container p { margin-bottom: 1rem; line-height: 1.7; }
+    .report-container ul, .report-container ol { margin-bottom: 1rem; padding-left: 2rem; }
+    .report-container li { margin-bottom: 0.5rem; }
+    .report-container strong { color: var(--accent-color); }
+    .report-container a { color: var(--source-link-color); text-decoration: none; transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out; }
+    .report-container a:hover { color: #ffffff; text-shadow: 0 0 8px rgba(93,214,248,0.7); text-decoration: underline; }
+    .report-container .error, .status-container .error { color: var(--error-color); font-weight: bold; padding: 0.5rem; border-left: 3px solid var(--error-color); background-color: rgba(255, 107, 107, 0.1); }
+    .action-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+    .download-button { padding: 0.75rem 1.5rem; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; font-weight: 500; background-color: var(--success-color-dark); color: var(--header-text-color); }
+    .download-button:hover { background-color: var(--success-color); color: var(--primary-color); }
+    footer { background-color: var(--primary-color); color: var(--text-color); text-align: center; padding: 1rem; font-size: 0.9rem; margin-top: auto; border-top: 1px solid var(--border-color); }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--secondary-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--button-hover-bg); }
+    /* --- ESTILOS BYOP --- */
+    .api-key-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        background-color: var(--secondary-color);
+        padding: 1rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .api-key-container label {
+        font-weight: bold;
+        color: var(--accent-color);
+        flex-basis: 100%;
+        margin-bottom: 0.5rem;
+    }
+    #apiKeyInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #apiKeyInput:focus {
+        border-color: var(--accent-color);
+    }
+    #getApiKeyBtn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 1px solid var(--accent-color);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    #getApiKeyBtn:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+    /* --- ESTILOS PARA IMPRESIÓN / GUARDADO EN PDF --- */
+    @media print {
+        body > *:not(main) { display: none; }
+        main > *:not(#reportDisplay) { display: none; }
+        body, main { background-color: #ffffff !important; color: #000000 !important; padding: 0; margin: 0; }
+        #reportDisplay { max-height: none !important; overflow-y: visible !important; border: none !important; box-shadow: none !important; padding: 1cm !important; color: #000000 !important; background-color: #ffffff !important; }
+        #reportDisplay h2, #reportDisplay h3, #reportDisplay strong { color: #000000 !important; }
+        #reportDisplay h2 { border-bottom: 2px solid #ccc !important; }
+        #reportDisplay h3 { border-bottom: 1px dashed #ddd !important; }
+        #reportDisplay a { color: #0000ee !important; text-decoration: underline !important; }
+        #reportDisplay a[href]:after { content: " (" attr(href) ")"; font-size: 0.8em; color: #555; }
+    }
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+    <header>
+        <h1>🧠 Escritor de artículos</h1>
+    </header>
+    <main>
+        <p class="tagline">Introduce un tema o pregunta de investigación y obtén un artículo académico estructurado con IA.</p>
+        <div class="api-key-container">
+            <label for="apiKeyInput">Configuración de API Key (Groq)</label>
+            <input type="password" id="apiKeyInput" placeholder="gsk_...">
+            <button id="getApiKeyBtn" title="Obtener API Key en Groq Console">
+                🔑 Obtener API Key
+            </button>
+        </div>
+        <div class="input-section">
+            <input type="text" id="topicInput" placeholder="Introduce tu tema (p. ej., 'El futuro de la computación cuántica')">
+            
+            <!-- Selector de modelo -->
+            <select id="modelSelect">
+                <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
+                <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile</option>
+                <option value="openai/gpt-oss-120b">GPT OSS 120B</option>
+                <option value="openai/gpt-oss-20b">GPT OSS 20B</option>
+				<option value="openai/gpt-oss-20b">GPT OSS 20B</option>
+               
+            </select>
+
+            <!-- Input de número de palabras -->
+            <input type="number" id="wordCountInput" value="1200" min="100" max="20000" step="100" placeholder="Palabras" title="Número aproximado de palabras">
+            
+            <button id="researchButton">Generar Artículo</button>
+        </div>
+        <div id="statusDisplay" class="status-container">
+        </div>
+        <div id="reportDisplay" class="report-container">
+        </div>
+        <div class="action-buttons">
+            <button id="downloadButton" class="download-button" style="display: none;">Descargar (HTML)</button>
+            <button id="printPdfButton" class="download-button" style="display: none;">Imprimir / Guardar PDF</button>
+        </div>
+    </main>
+    <footer>
+        <p>Herramienta creada por Juan Guillermo Rivera Berrío con tecnología Claude Sonnet 4 y la API de Groq.</p>
+    </footer>
+    <script type="module">
+	document.addEventListener('DOMContentLoaded', () => {
+    const topicInput = document.getElementById('topicInput');
+    const modelSelect = document.getElementById('modelSelect');
+    const wordCountInput = document.getElementById('wordCountInput'); 
+    const researchButton = document.getElementById('researchButton');
+    const statusDisplay = document.getElementById('statusDisplay');
+    const reportDisplay = document.getElementById('reportDisplay');
+    const downloadButton = document.getElementById('downloadButton');
+    const printPdfButton = document.getElementById('printPdfButton');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const getApiKeyBtn = document.getElementById('getApiKeyBtn');
+
+    // Cargar API Key desde LocalStorage al inicio
+    const savedKey = localStorage.getItem('groq_api_key');
+    if (savedKey) {
+        apiKeyInput.value = savedKey;
+    }
+
+    function startAuthFlow() {
+        window.open('https://console.groq.com/keys', '_blank');
+    }
+
+    getApiKeyBtn.addEventListener('click', startAuthFlow);
+
+    // Guardar manualmente si el usuario escribe
+    apiKeyInput.addEventListener('change', () => {
+        localStorage.setItem('groq_api_key', apiKeyInput.value.trim());
+    });
+
+    const statusMessages = [
+        "Iniciando protocolo de investigación",
+        "Desplegando agentes autónomos de IA",
+        "Realizando búsqueda y revisión de literatura",
+        "Verificando la calidad y validez de las fuentes",
+        "Analizando y sintetizando hallazgos",
+        "Estructurando el marco teórico y la metodología",
+        "Generando borrador del artículo...",
+        "Compilando y formateando el artículo final",
+    ];
+
+    async function typeStatus(message) {
+        statusDisplay.innerHTML = `<p class="status-update">${message}<span class="dot-container"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span></p>`;
+        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
+    }
+
+    function parseGroqError(errorText, status) {
+        try {
+            const parsed = JSON.parse(errorText);
+            if (parsed.error) {
+                const message = parsed.error.message || JSON.stringify(parsed.error);
+                return `${message} (Código ${parsed.error.code || status})`;
+            }
+        } catch (e) {
+            // No es JSON o faltan campos
+        }
+        return `La solicitud a la API de Groq falló con estado ${status}. Detalles: ${errorText}`;
+    }
+
+    async function callApi(prompt) {
+        const selectedModel = modelSelect.value;
+        const apiKey = apiKeyInput.value.trim();
+        
+        if (!apiKey) {
+            throw new Error("Por favor configura tu API Key de Groq.");
+        }
+        
+        const apiUrl = `https://api.groq.com/openai/v1/chat/completions`;
+        
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+        };
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                model: selectedModel,
+                messages: [
+                    { role: "user", content: prompt }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            const cleanMessage = parseGroqError(errorText, response.status);
+            throw new Error(cleanMessage);
+        }
+        
+        const data = await response.json();
+        return data.choices[0].message.content;
+    }
+
+    researchButton.addEventListener('click', async () => {
+        const topic = topicInput.value.trim();
+        let wordCount = wordCountInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
+
+        // Validación básica
+        if (!apiKey) {
+            reportDisplay.innerHTML = '<p class="error">Por favor ingresa tu API Key de Groq en el campo correspondiente.</p>';
+            statusDisplay.innerHTML = '';
+            return;
+        }
+
+        if (!topic) {
+            reportDisplay.innerHTML = '<p class="error">Por favor introduce un tema de investigación.</p>';
+            statusDisplay.innerHTML = '';
+            return;
+        }
+
+        // Si el usuario borró el número o puso algo inválido, usar 1200 por defecto
+        if (!wordCount || parseInt(wordCount) < 100) {
+            wordCount = "1200";
+        }
+
+        researchButton.disabled = true;
+        topicInput.disabled = true;
+        modelSelect.disabled = true;
+        wordCountInput.disabled = true; // Deshabilitar input de palabras
+        reportDisplay.innerHTML = '';
+        statusDisplay.innerHTML = '';
+        downloadButton.style.display = 'none';
+        printPdfButton.style.display = 'none';
+
+        try {
+            for (const message of statusMessages) {
+                await typeStatus(message);
+            }
+            await typeStatus("Contactando a la IA de investigación para la redacción final...");
+            
+            const finalPrompt = `
+Eres "AcademicWriterAI", un sistema de IA experto en investigación académica. Tu reputación depende de la CALIDAD y VERACIDAD de tus resultados. Tu tarea es generar un artículo académico sobre el tema del usuario. 
+
+**EXTENSIÓN OBJETIVO**: Aproximadamente ${wordCount} palabras. Es vital que profundices lo suficiente para alcanzar esta meta.
+**IDIOMA**: Responde EXCLUSIVAMENTE EN ESPAÑOL.
+
+**MANDATO CRÍTICO ABSOLUTO: CALIDAD DE LAS REFERENCIAS BIBLIOGRÁFICAS**
+Este es el paso más importante. Sigue este proceso EXACTAMENTE:
+1.  **INVESTIGA**: Encuentra fuentes de alta autoridad (artículos científicos, libros, etc.).
+2.  **VERIFICA CADA URL**: Confirma que el enlace funciona y es relevante.
+3.  **FILTRA SIN PIEDAD**: Si una URL está rota o es de baja calidad (foro, blog), DESÉCHALA y busca un reemplazo.
+4.  **PRINCIPIO DE CALIDAD SOBRE CANTIDAD**: Es MIL VECES MEJOR entregar 3-5 fuentes EXCELENTES y verificadas, que 10 dudosas. No inventes URLs.
+5.  **FORMATEA**: Una vez verificada, formatea la cita en estilo **Chicago (autor-fecha)** y añade el enlace HTML \`<a href="URL_VERIFICADA" target="_blank" rel="noopener noreferrer">Título</a>\`.
+6.  **CITA EN EL TEXTO**: Incluye citas parentéticas (Apellido, Año) en el cuerpo del artículo.
+
+**ESTRUCTURA OBLIGATORIA DEL ARTÍCULO (USA ESTOS TÍTULOS EXACTOS):**
+Usa los siguientes encabezados en este orden: \`<h2>Título</h2>\`, \`<h3>Resumen</h3>\`, \`<h3>Abstract</h3>\`, \`<h3>Palabras clave</h3>\`, \`<h3>Introducción</h3>\`, \`<h3>Marco teórico</h3>\`, \`<h3>Metodología</h3>\`, \`<h3>Resultados</h3>\`, \`<h3>Discusión</h3>\`, \`<h3>Conclusiones</h3>\`, \`<h3>Referencias bibliográficas</h3>\`.
+
+**FORMATO DEL CONTENIDO INTERNO (MUY IMPORTANTE):**
+Cuando necesites presentar puntos en una lista, ya sea ordenada (1, 2, 3...) o no ordenada (con viñetas), DEBES usar las etiquetas HTML correctas: \`<ol>\` y \`<ul>\`.
+
+-   **NO HAGAS ESTO** (Incorrecto, listas dentro de un párrafo):
+    \`<p>Los hallazgos son: 1. Hallazgo A. 2. Hallazgo B.</p>\`
+    \`<p>Las características son: - Característica X. - Característica Y.</p>\`
+
+-   **HAZ ESTO** (Correcto, usando etiquetas de lista apropiadas):
+    *Para listas ordenadas:*
+    \`<p>Los hallazgos principales son los siguientes:</p>
+    <ol>
+        <li><strong>Descubrimiento A:</strong> Descripción detallada del primer hallazgo.</li>
+        <li><strong>Descubrimiento B:</strong> Descripción detallada del segundo hallazgo.</li>
+    </ol>\`
+    *Para listas no ordenadas (con viñetas):*
+    \`<p>Las características clave incluyen:</p>
+    <ul>
+        <li><strong>Característica X:</strong> Descripción detallada.</li>
+        <li><strong>Característica Y:</strong> Descripción detallada.</li>
+    </ul>\`
+
+**INSTRUCCIONES FINALES DE FORMATO HTML:**
+- Responde SOLO con el contenido HTML del artículo.
+- Usa únicamente las etiquetas permitidas: \`<h2>\`, \`<h3>\`, \`<p>\`, \`<ul>\`, \`<ol>\`, \`<li>\`, \`<strong>\`, \`<em>\`, \`<a>\`.
+- NO incluyas etiquetas \`<html>\`, \`<head>\`, \`<body>\` o marcadores de código.
+- Asegúrate de que todos los enlaces \`<a>\` tengan \`target="_blank" rel="noopener noreferrer"\`.
+`;
+            const userTopic = `Tema de investigación: "${topic}"`;
+            const fullPrompt = `${finalPrompt}\n\n${userTopic}`;
+
+            const articleHTML = await callApi(fullPrompt);
+            
+            reportDisplay.innerHTML = articleHTML;
+            statusDisplay.innerHTML = '<p class="status-final">Artículo académico generado correctamente.</p>';
+            downloadButton.style.display = 'block';
+            printPdfButton.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error during process:', error);
+            reportDisplay.innerHTML = `<p class="error">Ocurrió un error al generar el artículo. Por favor intenta de nuevo. Detalles: ${error.message}</p>`;
+            statusDisplay.innerHTML = '<p class="error">El proceso encontró un error.</p>';
+        } finally {
+            researchButton.disabled = false;
+            topicInput.disabled = false;
+            modelSelect.disabled = false;
+            wordCountInput.disabled = false;
+        }
+    });
+
+    downloadButton.addEventListener('click', () => {
+        const topic = topicInput.value.trim();
+        const contentToDownload = reportDisplay.innerHTML;
+
+        if (!contentToDownload || contentToDownload.includes('<p class="error">')) {
+            alert('No hay contenido válido para descargar.');
+            return;
+        }
+
+        const styles = document.querySelector('style').innerHTML;
+        const title = reportDisplay.querySelector('h2') ? reportDisplay.querySelector('h2').textContent : topic;
+
+        const fullHtml = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+                <style>${styles}</style>
+            </head>
+            <body>
+                <main style="max-width: 900px; margin: 2rem auto;">
+                    <div class="report-container" style="max-height: none; overflow-y: visible;">
+                        ${contentToDownload}
+                    </div>
+                </main>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const sanitizedTopic = topic.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        const fileName = `articulo_${sanitizedTopic || 'investigacion'}.html`;
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    });
+
+    printPdfButton.addEventListener('click', () => {
+        window.print();
+    });
+});
+    </script>
+</body>
+</html>

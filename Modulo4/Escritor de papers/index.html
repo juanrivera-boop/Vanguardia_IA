@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escritor de artículos</title>
+    <style>
+    :root {
+        --bg-color: #11151c;
+        --primary-color: #1c2331;
+        --secondary-color: #232b3a;
+        --accent-color: #66b8ff;
+        --text-color: #e8eef7;
+        --header-text-color: #ffffff;
+        --border-color: #3d4757;
+        --input-bg-color: #0d1117;
+        --report-bg: #0d1117;
+        --error-color: #ff7b72;
+        --success-color: #3fb950;
+        --success-color-dark: #1a7f37;
+        --source-link-color: #66b8ff;
+        --btn-bg: #2563eb;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #1d4ed8;
+        --success-contrast: #0d1117;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    :root[data-theme="claro"] {
+        --bg-color: #f6f8fa;
+        --primary-color: #e8ecf1;
+        --secondary-color: #eef1f5;
+        --accent-color: #1d4ed8;
+        --text-color: #161b26;
+        --header-text-color: #0f172a;
+        --border-color: #c3ccd8;
+        --input-bg-color: #ffffff;
+        --report-bg: #ffffff;
+        --error-color: #b3261e;
+        --success-color: #1a7f37;
+        --success-color-dark: #2e7d32;
+        --source-link-color: #1d4ed8;
+        --btn-bg: #1d4ed8;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #2563eb;
+        --success-contrast: #ffffff;
+    }
+    :root[data-theme="contraste"] {
+        --bg-color: #000000;
+        --primary-color: #000000;
+        --secondary-color: #1a1a1a;
+        --accent-color: #ffff00;
+        --text-color: #ffffff;
+        --header-text-color: #ffffff;
+        --border-color: #ffffff;
+        --input-bg-color: #1a1a1a;
+        --report-bg: #000000;
+        --error-color: #ff6b6b;
+        --success-color: #2fff8f;
+        --success-color-dark: #008000;
+        --source-link-color: #ffff00;
+        --btn-bg: #ffff00;
+        --btn-text: #000000;
+        --btn-hover-bg: #ffd700;
+        --success-contrast: #000000;
+    }
+    :root[data-theme="azul"] {
+        --bg-color: #0a192f;
+        --primary-color: #112a46;
+        --secondary-color: #16284a;
+        --accent-color: #64b5f6;
+        --text-color: #e6f1ff;
+        --header-text-color: #ffffff;
+        --border-color: #2c4360;
+        --input-bg-color: #0f2036;
+        --report-bg: #0f2036;
+        --error-color: #ff7b72;
+        --success-color: #64ffda;
+        --success-color-dark: #007f5f;
+        --source-link-color: #90caf9;
+        --btn-bg: #1565c0;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #0d47a1;
+        --success-contrast: #0a192f;
+    }
+    :root[data-theme="verde"] {
+        --bg-color: #071a12;
+        --primary-color: #0d2b1d;
+        --secondary-color: #0f301f;
+        --accent-color: #69f0ae;
+        --text-color: #e8f5e9;
+        --header-text-color: #ffffff;
+        --border-color: #2d5a3f;
+        --input-bg-color: #081f15;
+        --report-bg: #081f15;
+        --error-color: #ff8a80;
+        --success-color: #69f0ae;
+        --success-color-dark: #1b5e20;
+        --source-link-color: #80e27e;
+        --btn-bg: #2e7d32;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #1b5e20;
+        --success-contrast: #071a12;
+    }
+    :root[data-theme="sepia"] {
+        --bg-color: #f5ecd9;
+        --primary-color: #e0cfa9;
+        --secondary-color: #eee0c4;
+        --accent-color: #8c4a0e;
+        --text-color: #33291b;
+        --header-text-color: #33291b;
+        --border-color: #cfbd94;
+        --input-bg-color: #fffaf0;
+        --report-bg: #fffaf0;
+        --error-color: #b3261e;
+        --success-color: #2e7d32;
+        --success-color-dark: #1b5e20;
+        --source-link-color: #6e380a;
+        --btn-bg: #8c4a0e;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #6e380a;
+        --success-contrast: #ffffff;
+    }
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    header {
+        position: relative;
+        background-color: var(--primary-color);
+        color: var(--header-text-color);
+        padding: 1rem 2rem;
+        text-align: center;
+        border-bottom: 3px solid var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .header-brand {
+        display: contents;
+    }
+    .header-logo {
+        position: absolute;
+        left: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: auto;
+        height: calc(2rem * 1.2 * 0.8);
+        object-fit: contain;
+        flex: 0 0 auto;
+    }
+    #paletteBtn, #downloadPaletteBtn {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-family: var(--font-family);
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    #paletteBtn:hover, #downloadPaletteBtn:hover {
+        background-color: var(--btn-hover-bg);
+    }
+    .palette-panel {
+        position: absolute;
+        right: 1rem;
+        top: calc(100% + 0.5rem);
+        background-color: var(--report-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem;
+        z-index: 1000;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        min-width: 230px;
+        max-width: 90vw;
+        text-align: left;
+    }
+    .palette-panel-title {
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin: 0 0 0.5rem 0;
+    }
+    .palette-option {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 0.45rem 0.6rem;
+        background: transparent;
+        border: none;
+        border-radius: 5px;
+        color: var(--text-color);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: var(--font-family);
+        text-align: left;
+    }
+    .palette-option:hover {
+        background-color: var(--secondary-color);
+    }
+    .palette-option.active {
+        outline: 2px solid var(--accent-color);
+        outline-offset: -2px;
+    }
+    .palette-swatch {
+        display: inline-block;
+        width: 30px;
+        height: 18px;
+        border-radius: 3px;
+        border: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    main {
+        flex-grow: 1;
+        padding: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .tagline {
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        margin-bottom: 2rem;
+    }
+    .input-section {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        align-items: center;
+        flex-wrap: wrap; /* Permitir ajuste en móviles */
+    }
+    #topicInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #topicInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL SELECTOR DE MODELO --- */
+    #modelSelect {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        cursor: pointer;
+        min-width: 150px;
+    }
+    #modelSelect:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL INPUT DE PALABRAS --- */
+    #wordCountInput {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        width: 90px;
+    }
+    #wordCountInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* -------------------------------------- */
+    #researchButton {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    #researchButton:hover:not(:disabled) {
+        background-color: var(--btn-hover-bg);
+    }
+    #researchButton:disabled {
+        background-color: var(--secondary-color);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    .status-container {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: var(--secondary-color);
+        border-radius: 5px;
+        border-left: 5px solid var(--accent-color);
+        min-height: 20px;
+    }
+    .status-update { color: var(--text-color); margin: 0.5rem 0; font-style: italic; }
+    .status-update span.dot-container { display: inline-block; width: 30px; }
+    .status-update span.dot { display: inline-block; animation: blink 1.4s infinite both; opacity: 0; margin: 0 1px; }
+    .status-update span.dot:nth-child(1) { animation-delay: 0s; }
+    .status-update span.dot:nth-child(2) { animation-delay: .2s; }
+    .status-update span.dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+    .status-final { color: var(--success-color); font-weight: bold; margin: 0.5rem 0; }
+    .report-container {
+        background-color: var(--report-bg);
+        padding: 1.5rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        min-height: 100px;
+        max-height: 60vh;
+        overflow-y: auto;
+        color: var(--text-color);
+    }
+    .report-container h2 { color: var(--accent-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 0.5rem; margin-top: 0; }
+    .report-container h3 { color: var(--text-color); margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.3rem; }
+    .report-container p { margin-bottom: 1rem; line-height: 1.7; }
+    .report-container ul, .report-container ol { margin-bottom: 1rem; padding-left: 2rem; }
+    .report-container li { margin-bottom: 0.5rem; }
+    .report-container strong { color: var(--accent-color); }
+    .report-container ul li a { color: var(--source-link-color); text-decoration: none; transition: color 0.2s ease-in-out; }
+    .report-container ul li a:hover { color: var(--btn-hover-bg); text-decoration: underline; }
+    .report-container .error, .status-container .error { color: var(--error-color); font-weight: bold; padding: 0.5rem; border-left: 3px solid var(--error-color); background-color: rgba(255, 107, 107, 0.1); }
+    .article-ai-footer { margin-top: 2rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); color: var(--muted, var(--text-color)); font-size: 0.85rem; text-align: center; }
+    .action-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+    .download-button { padding: 0.75rem 1.5rem; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; font-weight: 500; background-color: var(--success-color-dark); color: var(--btn-text); }
+    .download-button:hover { background-color: var(--success-color); color: var(--success-contrast); }
+    footer { background-color: var(--primary-color); color: var(--text-color); text-align: center; padding: 1rem; font-size: 0.9rem; margin-top: auto; border-top: 1px solid var(--border-color); }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--secondary-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--btn-hover-bg); }
+    /* --- ESTILOS BYOP --- */
+    .api-key-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        background-color: var(--secondary-color);
+        padding: 1rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .api-key-container label {
+        font-weight: bold;
+        color: var(--accent-color);
+        flex-basis: 100%;
+        margin-bottom: 0.5rem;
+    }
+    #apiKeyInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #apiKeyInput:focus {
+        border-color: var(--accent-color);
+    }
+    #providerSelect {
+        flex: 1 1 220px;
+        min-width: 200px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+    #getApiKeyBtn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 1px solid var(--btn-bg);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    #getApiKeyBtn:hover {
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+    }
+    .api-key-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .api-key-actions button {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .api-key-actions button:hover:not(:disabled) {
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+    }
+    .api-key-actions button:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    /* --- ESTILOS PARA IMPRESIÓN / GUARDADO EN PDF --- */
+    @media print {
+        body > *:not(main) { display: none; }
+        main > *:not(#reportDisplay) { display: none; }
+        body, main { background-color: #ffffff !important; color: #000000 !important; padding: 0; margin: 0; }
+        #reportDisplay { max-height: none !important; overflow-y: visible !important; border: none !important; box-shadow: none !important; padding: 1cm !important; color: #000000 !important; background-color: #ffffff !important; }
+        #reportDisplay h2, #reportDisplay h3, #reportDisplay strong { color: #000000 !important; }
+        #reportDisplay h2 { border-bottom: 2px solid #ccc !important; }
+        #reportDisplay h3 { border-bottom: 1px dashed #ddd !important; }
+        #reportDisplay a { color: #0000ee !important; text-decoration: underline !important; }
+        #reportDisplay a[href]:after { content: " (" attr(href) ")"; font-size: 0.8em; color: #555; }
+    }
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <img class="header-logo" src="gifanimadoRedProyecto.gif" alt="Red Proyecto">
+            <h1>🧠 Escritor de artículos</h1>
+        </div>
+        <button id="paletteBtn" title="Cambiar paleta de colores">🎨 Paleta de colores</button>
+        <div id="palettePanel" class="palette-panel" style="display: none;">
+            <p class="palette-panel-title">Elige una paleta de colores</p>
+            <div id="paletteOptions"></div>
+        </div>
+    </header>
+    <main>
+        <p class="tagline">Introduce un tema o pregunta de investigación y obtén un artículo académico estructurado con IA.</p>
+        <div class="api-key-container">
+            <label for="providerSelect">Proveedor de IA</label>
+            <select id="providerSelect">
+                <optgroup label="Gratuitos">
+                    <option value="free" selected>Red Descartes</option>
+                    <option value="google">Google AI Studio</option>
+                    <option value="mistral">Mistral AI</option>
+                    <option value="cohere">Cohere</option>
+                    <option value="groq">Groq</option>
+                </optgroup>
+                <optgroup label="Pago por uso">
+                    <option value="pollinations">Pollinations AI</option>
+                    <option value="openrouter">OpenRouter</option>
+                    <option value="deepseek">DeepSeek</option>
+                </optgroup>
+            </select>
+            <label for="apiKeyInput" id="apiKeyLabel">Configuración de API Key (Pollinations)</label>
+            <input type="password" id="apiKeyInput" placeholder="plln_sk_...">
+            <div class="api-key-actions">
+                <button id="getApiKeyBtn" title="Obtener API Key">🔑 Obtener API Key</button>
+                <button id="validateKeyBtn" type="button">✅ Validar</button>
+                <button id="clearKeyBtn" type="button">🧹 Limpiar</button>
+            </div>
+        </div>
+        <div class="input-section">
+            <input type="text" id="topicInput" placeholder="Introduce tu tema (p. ej., 'El futuro de la computación cuántica')">
+            
+            <!-- Selector de modelo -->
+            <select id="modelSelect">
+                <option value="gemini-search">Gemini Search</option>
+                <option value="perplexity-fast">Perplexity Fast</option>
+                <option value="gemini-large">Gemini Large</option>
+				
+				<option value="gpt-5.5">GPT 5.5</option>
+				<option value="kimi-k2.6">kimi k2.6</option>
+				
+            </select>
+
+            <!-- Input de número de palabras -->
+            <input type="number" id="wordCountInput" value="1200" min="100" max="20000" step="100" placeholder="Palabras" title="Número aproximado de palabras">
+            
+            <button id="researchButton">Generar Artículo</button>
+        </div>
+        <div id="statusDisplay" class="status-container">
+        </div>
+        <div id="reportDisplay" class="report-container">
+        </div>
+        <div class="action-buttons">
+            <button id="downloadButton" class="download-button" style="display: none;">Descargar (HTML)</button>
+            <button id="printPdfButton" class="download-button" style="display: none;">Imprimir / Guardar PDF</button>
+        </div>
+    </main>
+    <footer>
+        <p>Herramienta creada por Juan Guillermo Rivera Berrío con tecnología Claude Sonnet 4 y las API de Pollinations.</p>
+    </footer>
+    <script type="module">
+	document.addEventListener('DOMContentLoaded', () => {
+    const topicInput = document.getElementById('topicInput');
+    const modelSelect = document.getElementById('modelSelect');
+    const wordCountInput = document.getElementById('wordCountInput'); 
+    const researchButton = document.getElementById('researchButton');
+    const statusDisplay = document.getElementById('statusDisplay');
+    const reportDisplay = document.getElementById('reportDisplay');
+    const downloadButton = document.getElementById('downloadButton');
+    const printPdfButton = document.getElementById('printPdfButton');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const providerSelect = document.getElementById('providerSelect');
+    const apiKeyLabel = document.getElementById('apiKeyLabel');
+    const getApiKeyBtn = document.getElementById('getApiKeyBtn');
+    const validateKeyBtn = document.getElementById('validateKeyBtn');
+    const clearKeyBtn = document.getElementById('clearKeyBtn');
+    const paletteBtn = document.getElementById('paletteBtn');
+    const palettePanel = document.getElementById('palettePanel');
+    const paletteOptions = document.getElementById('paletteOptions');
+
+    // --- PALETA DE COLORES ---
+    const THEMES = {
+        oscuro: { name: 'Oscuro', colors: ['#11151c', '#2563eb', '#66b8ff', '#e8eef7'] },
+        claro: { name: 'Claro', colors: ['#f6f8fa', '#1d4ed8', '#e8ecf1', '#161b26'] },
+        contraste: { name: 'Contraste alto', colors: ['#000000', '#ffff00', '#ffffff', '#2fff8f'] },
+        azul: { name: 'Azul', colors: ['#0a192f', '#1565c0', '#64b5f6', '#e6f1ff'] },
+        verde: { name: 'Verde', colors: ['#071a12', '#2e7d32', '#69f0ae', '#e8f5e9'] },
+        sepia: { name: 'Sepia', colors: ['#f5ecd9', '#8c4a0e', '#e0cfa9', '#33291b'] }
+    };
+
+    function buildPaletteOptions() {
+        paletteOptions.innerHTML = '';
+        for (const [key, theme] of Object.entries(THEMES)) {
+            const swatchGradient = `linear-gradient(135deg, ${theme.colors[0]} 0%, ${theme.colors[1]} 55%, ${theme.colors[2]} 100%)`;
+            const option = document.createElement('button');
+            option.type = 'button';
+            option.className = 'palette-option';
+            option.dataset.theme = key;
+            option.innerHTML = `<span class="palette-swatch" style="background: ${swatchGradient};"></span><span>${theme.name}</span>`;
+            option.addEventListener('click', () => {
+                applyTheme(key);
+                togglePalettePanel(false);
+            });
+            paletteOptions.appendChild(option);
+        }
+        updatePaletteActiveState();
+    }
+
+    function applyTheme(themeKey) {
+        const theme = THEMES[themeKey];
+        if (!theme) return;
+        document.documentElement.setAttribute('data-theme', themeKey);
+        localStorage.setItem('paleta_articulos', themeKey);
+        updatePaletteActiveState();
+    }
+
+    function updatePaletteActiveState() {
+        const current = document.documentElement.getAttribute('data-theme') || 'oscuro';
+        paletteOptions.querySelectorAll('.palette-option').forEach((opt) => {
+            opt.classList.toggle('active', opt.dataset.theme === current);
+        });
+    }
+
+    function togglePalettePanel(force) {
+        const willShow = typeof force === 'boolean' ? force : palettePanel.style.display === 'none';
+        palettePanel.style.display = willShow ? 'block' : 'none';
+    }
+
+    paletteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePalettePanel();
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!palettePanel.contains(e.target) && e.target !== paletteBtn) {
+            togglePalettePanel(false);
+        }
+    });
+
+    const savedTheme = localStorage.getItem('paleta_articulos');
+    if (savedTheme && THEMES[savedTheme]) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+    buildPaletteOptions();
+    // ------------------------------------------
+
+    const PROVIDERS = {
+        pollinations: { name: 'Pollinations AI', url: 'https://gen.pollinations.ai/v1/chat/completions', validateUrl: 'https://gen.pollinations.ai/v1/models', model: 'openai', placeholder: 'plln_sk_...', keyUrl: 'https://enter.pollinations.ai/authorize' },
+        free: { name: 'Red Descartes', url: 'https://node.proyectodescartes.org/api/ia/text', model: 'openai', free: true, placeholder: '', keyUrl: '' },
+        openrouter: { name: 'OpenRouter', url: 'https://openrouter.ai/api/v1/chat/completions', validateUrl: 'https://openrouter.ai/api/v1/models', model: 'google/gemini-2.5-flash', placeholder: 'sk-or-...', keyUrl: 'https://openrouter.ai/keys' },
+        google: { name: 'Google AI Studio', url: 'https://generativelanguage.googleapis.com/v1beta/models/', validateUrl: 'https://generativelanguage.googleapis.com/v1beta/models', model: 'gemini-3.8-flash', placeholder: 'AIzaSy...', keyUrl: 'https://aistudio.google.com/app/apikey' },
+        mistral: { name: 'Mistral AI', url: 'https://api.mistral.ai/v1/chat/completions', validateUrl: 'https://api.mistral.ai/v1/models', model: 'open-mistral-7b', placeholder: 'Clave Mistral API...', keyUrl: 'https://console.mistral.ai/api-keys/' },
+        cohere: { name: 'Cohere', url: 'https://api.cohere.com/v2/chat', validateUrl: 'https://api.cohere.com/v1/models', model: 'command-a-plus-05-2026', placeholder: 'Clave Cohere API...', keyUrl: 'https://dashboard.cohere.com/api-keys' },
+        groq: { name: 'Groq', url: 'https://api.groq.com/openai/v1/chat/completions', validateUrl: 'https://api.groq.com/openai/v1/models', model: 'llama-3.1-8b-instant', placeholder: 'gsk_...', keyUrl: 'https://console.groq.com/keys' },
+        deepseek: { name: 'DeepSeek', url: 'https://api.deepseek.com/chat/completions', validateUrl: 'https://api.deepseek.com/models', model: 'deepseek-flash', placeholder: 'sk-...', keyUrl: 'https://platform.deepseek.com/api_keys' },
+    };
+    const MODEL_OPTIONS = {
+        pollinations: [
+            'openai', 'openai/gpt-5.6-luna', 'moonshotai/kimi-k2.6', 'x-ai/grok-4.3', 'mistral-small-3.2', 'qwen-coder', 'gemini-fast',
+            'z-ai/glm-5.3-flash', 'openai/gpt-6-luna', 'minimax/minimax-m3', 'meta/llama-3.3-70b-instruct',
+            'google/gemini-3.8-flash', 'anthropic/claude-haiku-5.5', 'mistralai/mistral-large-4'
+        ],
+        free: ['openai', 'openai-fast', 'gemini-fast', 'gemini-search', 'mistral', 'nova-fast', 'perplexity-fast', 'deepseek'],
+        openrouter: ['google/gemini-2.5-flash', 'deepseek/deepseek-chat-v3-0324', 'openai/gpt-5-mini', 'moonshotai/kimi-k2.6', 'meta-llama/llama-3.3-70b-instruct', 'openrouter/free'],
+        google: ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.1-pro-preview'],
+        mistral: ['open-mistral-7b', 'open-mixtral-8x7b'],
+        cohere: ['command-a-plus-05-2026', 'command-a-03-2025', 'command-a-reasoning-08-2025', 'command-r7b-12-2024'],
+        groq: ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'],
+        deepseek: ['deepseek-flash', 'deepseek-v4-pro'],
+    };
+    function providerKeyName(provider) { return `${provider}_api_key`; }
+    function updateProvider() {
+        const provider = providerSelect.value;
+        const config = PROVIDERS[provider];
+        const options = MODEL_OPTIONS[provider] || [config.model];
+        modelSelect.replaceChildren(...options.map(model => new Option(model, model)));
+        modelSelect.value = config.model;
+        apiKeyLabel.textContent = config.free ? 'No se requiere API Key' : `Configuración de API Key (${config.name})`;
+        apiKeyInput.placeholder = config.placeholder;
+        apiKeyInput.disabled = Boolean(config.free);
+        apiKeyInput.required = !config.free;
+        apiKeyInput.value = config.free ? '' : (localStorage.getItem(providerKeyName(provider)) || '');
+        getApiKeyBtn.style.display = config.free ? 'none' : '';
+        getApiKeyBtn.title = `Obtener API Key de ${config.name}`;
+        localStorage.setItem('preferred_writer_provider', provider);
+    }
+    const savedProvider = localStorage.getItem('preferred_writer_provider');
+    providerSelect.value = PROVIDERS[savedProvider] ? savedProvider : 'free';
+    providerSelect.addEventListener('change', updateProvider);
+    apiKeyInput.addEventListener('change', () => {
+        if (!PROVIDERS[providerSelect.value].free) localStorage.setItem(providerKeyName(providerSelect.value), apiKeyInput.value.trim());
+    });
+    updateProvider();
+
+    // Manejar el flujo de redirección (BYOP)
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const apiKeyFromHash = hashParams.get('api_key');
+
+    if (apiKeyFromHash) {
+        apiKeyInput.value = apiKeyFromHash;
+        localStorage.setItem('pollinations_api_key', apiKeyFromHash);
+        // Limpiar URL
+        window.history.replaceState(null, null, window.location.pathname + window.location.search);
+        console.log('API Key obtenida con éxito desde el flujo de redirección');
+    }
+
+    function startAuthFlow() {
+        const config = PROVIDERS[providerSelect.value];
+        if (!config.keyUrl) return;
+        if (providerSelect.value === 'pollinations') {
+            const redirectUrl = window.location.href.split('#')[0];
+            window.location.href = `${config.keyUrl}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+            return;
+        }
+        window.open(config.keyUrl, '_blank', 'noopener,noreferrer');
+    }
+
+    getApiKeyBtn.addEventListener('click', startAuthFlow);
+
+    async function validateProviderKey() {
+        const provider = providerSelect.value;
+        const config = PROVIDERS[provider];
+        const key = apiKeyInput.value.trim();
+        if (config.free) {
+            statusDisplay.innerHTML = `<p class="status-final">✅ ${config.name} no requiere API Key.</p>`;
+            return;
+        }
+        if (!key) {
+            statusDisplay.innerHTML = '<p class="error">Introduce una API Key antes de validarla.</p>';
+            return;
+        }
+
+        validateKeyBtn.disabled = true;
+        validateKeyBtn.textContent = '⏳ Validando...';
+        try {
+            const headers = {};
+            if (provider === 'google') headers['x-goog-api-key'] = key;
+            else headers.Authorization = `Bearer ${key}`;
+            const response = await fetch(config.validateUrl, { method: 'GET', headers });
+            if (!response.ok) {
+                const details = (await response.text()).slice(0, 240);
+                throw new Error(`${response.status}${details ? `: ${details}` : ''}`);
+            }
+            localStorage.setItem(providerKeyName(provider), key);
+            statusDisplay.innerHTML = `<p class="status-final">✅ API Key válida para ${config.name}.</p>`;
+        } catch (error) {
+            statusDisplay.innerHTML = `<p class="error">❌ No se pudo validar la API Key de ${config.name}. ${escapeHtml(error.message)}</p>`;
+        } finally {
+            validateKeyBtn.disabled = false;
+            validateKeyBtn.textContent = '✅ Validar';
+        }
+    }
+
+    validateKeyBtn.addEventListener('click', validateProviderKey);
+    clearKeyBtn.addEventListener('click', () => {
+        const provider = providerSelect.value;
+        localStorage.removeItem(providerKeyName(provider));
+        apiKeyInput.value = '';
+        statusDisplay.innerHTML = `<p class="status-final">🧹 API Key eliminada del navegador para ${PROVIDERS[provider].name}.</p>`;
+    });
+
+    const statusMessages = [
+        "Iniciando protocolo de investigación",
+        "Desplegando agentes autónomos de IA",
+        "Realizando búsqueda y revisión de literatura",
+        "Verificando la calidad y validez de las fuentes",
+        "Analizando y sintetizando hallazgos",
+        "Estructurando el marco teórico y la metodología",
+        "Generando borrador del artículo...",
+        "Compilando y formateando el artículo final",
+    ];
+
+    async function typeStatus(message) {
+        statusDisplay.innerHTML = `<p class="status-update">${message}<span class="dot-container"><span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span></p>`;
+        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
+    }
+
+    // REFACTORIZADO DE ACUERDO A LA ESPECIFICACIÓN: Uso de endpoint POST para evitar HTTP 414 URI Too Long
+    async function callApi(prompt) {
+        const provider = providerSelect.value;
+        const config = PROVIDERS[provider];
+        const selectedModel = modelSelect.value;
+        const apiKey = apiKeyInput.value.trim();
+        let apiUrl = config.url;
+        const headers = { 'Content-Type': 'application/json' };
+        let body;
+
+        if (provider === 'free') {
+            body = { prompt, model: selectedModel };
+        } else if (provider === 'google') {
+            apiUrl += `${selectedModel}:generateContent`;
+            headers['x-goog-api-key'] = apiKey;
+            body = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
+        } else if (provider === 'cohere') {
+            headers.Authorization = `Bearer ${apiKey}`;
+            body = { model: selectedModel, messages: [{ role: 'user', content: prompt }] };
+        } else {
+            headers.Authorization = `Bearer ${apiKey}`;
+            if (provider === 'openrouter') {
+                headers['HTTP-Referer'] = window.location.origin;
+                headers['X-Title'] = 'Escritor de artículos';
+            }
+            body = { model: selectedModel, messages: [{ role: 'user', content: prompt }] };
+        }
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                ...body
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`La solicitud a la API falló con estado ${response.status}. Detalles: ${errorText}`);
+        }
+        
+        const responseText = await response.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            // Red Descartes puede devolver directamente el HTML generado.
+            return responseText;
+        }
+        if (typeof data === 'string') return data;
+        if (provider === 'google') return data.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
+        if (provider === 'cohere') return data.message?.content?.map(part => part.text || '').join('') || '';
+        if (provider === 'free') return data.text || data.response || data.choices?.[0]?.message?.content || '';
+        return data.choices?.[0]?.message?.content || '';
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[character]));
+    }
+
+    function articleAiFooter() {
+        const provider = PROVIDERS[providerSelect.value];
+        return `<footer class="article-ai-footer">Generado con ${escapeHtml(provider.name)} · Modelo: ${escapeHtml(modelSelect.value)}</footer>`;
+    }
+
+    // Elimina marcadores de cita numérica tipo [17], [1, 2] o [1-3], ajenos a la norma Chicago autor-fecha
+    function limpiarCitasNumericas(html) {
+        return html
+            .replace(/<sup>\s*\[\s*\d+(?:\s*[-,\u2013]\s*\d+)*\s*\]\s*<\/sup>/gi, '')
+            .replace(/\s?\[\s*\d+(?:\s*[-,\u2013]\s*\d+)*\s*\]/g, '');
+    }
+
+    researchButton.addEventListener('click', async () => {
+        const topic = topicInput.value.trim();
+        let wordCount = wordCountInput.value.trim();
+        const apiKey = apiKeyInput.value.trim();
+
+        // Validación básica
+        if (!topic) {
+            reportDisplay.innerHTML = '<p class="error">Por favor introduce un tema de investigación.</p>';
+            statusDisplay.innerHTML = '';
+            return;
+        }
+
+        // Si el usuario borró el número o puso algo inválido, usar 1200 por defecto
+        if (!wordCount || parseInt(wordCount) < 100) {
+            wordCount = "1200";
+        }
+
+        researchButton.disabled = true;
+        topicInput.disabled = true;
+        modelSelect.disabled = true;
+        wordCountInput.disabled = true; // Deshabilitar input de palabras
+        reportDisplay.innerHTML = '';
+        statusDisplay.innerHTML = '';
+        downloadButton.style.display = 'none';
+        printPdfButton.style.display = 'none';
+
+        try {
+            for (const message of statusMessages) {
+                await typeStatus(message);
+            }
+            await typeStatus("Contactando a la IA de investigación para la redacción final...");
+            
+            const finalPrompt = `
+Eres "AcademicWriterAI", un sistema de IA experto en investigación académica. Tu reputación depende de la CALIDAD y VERACIDAD de tus resultados. Tu tarea es generar un artículo académico sobre el tema del usuario. 
+
+**EXTENSIÓN OBJETIVO**: Aproximadamente ${wordCount} palabras. Es vital que profundices lo suficiente para alcanzar esta meta.
+**IDIOMA**: Responde EXCLUSIVAMENTE EN ESPAÑOL.
+
+**MANDATO CRÍTICO ABSOLUTO: CALIDAD Y CONSISTENCIA DE LAS REFERENCIAS BIBLIOGRÁFICAS**
+Este es el paso más importante. Sigue este proceso EXACTAMENTE:
+1.  **INVESTIGA**: Encuentra fuentes de alta autoridad (artículos científicos, libros, etc.).
+2.  **VERIFICA CADA URL**: Confirma que el enlace funciona y es relevante.
+3.  **FILTRA SIN PIEDAD**: Si una URL está rota o es de baja calidad (foro, blog), DESÉCHALA y busca un reemplazo.
+4.  **PRINCIPIO DE CALIDAD SOBRE CANTIDAD**: Es MIL VECES MEJOR entregar 3-5 fuentes EXCELENTES y verificadas, que 10 dudosas. No inventes URLs.
+5.  **FORMATEA**: Una vez verificada, formatea la cita en estilo **Chicago (autor-fecha)** y añade el enlace HTML \`<a href="URL_VERIFICADA" target="_blank" rel="noopener noreferrer">Título</a>\`.
+6.  **CITA EN EL TEXTO**: Incluye citas parentéticas (Apellido, Año) en el cuerpo del artículo, por ejemplo: (Einstein, 1916) o (Kuhn, 1962).
+7.  **PROHIBIDO NUMERAR REFERENCIAS**: NO uses números de referencia tipo [1], [2], [17] ni notas numeradas en el texto. La norma Chicago autor-fecha NO usa números de referencia.
+8.  **CORRESPONDENCIA EXACTA**: Toda cita (Apellido, Año) del cuerpo debe tener su entrada completa en "Referencias bibliográficas" y viceversa: cada referencia listada debe estar citada en el texto. Nunca cites un número o un autor-año que no figure en las referencias.
+9.  **ORDEN ALFABÉTICO**: La lista de "Referencias bibliográficas" va ordenada alfabéticamente por apellido del autor, sin números ni viñetas enumeradas.
+
+**ESTRUCTURA OBLIGATORIA DEL ARTÍCULO (USA ESTOS TÍTULOS EXACTOS):**
+Usa los siguientes encabezados en este orden: \`<h2>Título</h2>\`, \`<h3>Resumen</h3>\`, \`<h3>Abstract</h3>\`, \`<h3>Palabras clave</h3>\`, \`<h3>Introducción</h3>\`, \`<h3>Marco teórico</h3>\`, \`<h3>Metodología</h3>\`, \`<h3>Resultados</h3>\`, \`<h3>Discusión</h3>\`, \`<h3>Conclusiones</h3>\`, \`<h3>Referencias bibliográficas</h3>\`.
+
+**FORMATO DEL CONTENIDO INTERNO (MUY IMPORTANTE):**
+Cuando necesites presentar puntos en una lista, ya sea ordenada (1, 2, 3...) o no ordenada (con viñetas), DEBES usar las etiquetas HTML correctas: \`<ol>\` y \`<ul>\`.
+
+-   **NO HAGAS ESTO** (Incorrecto, listas dentro de un párrafo):
+    \`<p>Los hallazgos son: 1. Hallazgo A. 2. Hallazgo B.</p>\`
+    \`<p>Las características son: - Característica X. - Característica Y.</p>\`
+
+-   **HAZ ESTO** (Correcto, usando etiquetas de lista apropiadas):
+    *Para listas ordenadas:*
+    \`<p>Los hallazgos principales son los siguientes:</p>
+    <ol>
+        <li><strong>Descubrimiento A:</strong> Descripción detallada del primer hallazgo.</li>
+        <li><strong>Descubrimiento B:</strong> Descripción detallada del segundo hallazgo.</li>
+    </ol>\`
+    *Para listas no ordenadas (con viñetas):*
+    \`<p>Las características clave incluyen:</p>
+    <ul>
+        <li><strong>Característica X:</strong> Descripción detallada.</li>
+        <li><strong>Característica Y:</strong> Descripción detallada.</li>
+    </ul>\`
+
+**INSTRUCCIONES FINALES DE FORMATO HTML:**
+- Responde SOLO con el contenido HTML del artículo.
+- Usa únicamente las etiquetas permitidas: \`<h2>\`, \`<h3>\`, \`<p>\`, \`<ul>\`, \`<ol>\`, \`<li>\`, \`<strong>\`, \`<em>\`, \`<a>\`.
+- NO incluyas etiquetas \`<html>\`, \`<head>\`, \`<body>\` o marcadores de código.
+- Asegúrate de que todos los enlaces \`<a>\` tengan \`target="_blank" rel="noopener noreferrer"\`.
+`;
+            const userTopic = `Tema de investigación: "${topic}"`;
+            const fullPrompt = `${finalPrompt}\n\n${userTopic}`;
+
+            const articleHTML = await callApi(fullPrompt);
+            
+            reportDisplay.innerHTML = limpiarCitasNumericas(articleHTML) + articleAiFooter();
+            statusDisplay.innerHTML = '<p class="status-final">Artículo académico generado correctamente.</p>';
+            downloadButton.style.display = 'block';
+            printPdfButton.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error during process:', error);
+            reportDisplay.innerHTML = `<p class="error">Ocurrió un error al generar el artículo. Por favor intenta de nuevo. Detalles: ${error.message}</p>`;
+            statusDisplay.innerHTML = '<p class="error">El proceso encontró un error.</p>';
+        } finally {
+            researchButton.disabled = false;
+            topicInput.disabled = false;
+            modelSelect.disabled = false;
+            wordCountInput.disabled = false;
+        }
+    });
+
+    downloadButton.addEventListener('click', () => {
+        const topic = topicInput.value.trim();
+        const contentToDownload = reportDisplay.innerHTML;
+
+        if (!contentToDownload || contentToDownload.includes('<p class="error">')) {
+            alert('No hay contenido válido para descargar.');
+            return;
+        }
+
+        const styles = document.querySelector('style').innerHTML;
+        const title = reportDisplay.querySelector('h2') ? reportDisplay.querySelector('h2').textContent : topic;
+
+        const fullHtml = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+                <style>${styles}</style>
+            </head>
+            <body>
+                <header>
+                    <h1>🧠 Escritor de artículos</h1>
+                    <button id="downloadPaletteBtn" title="Cambiar paleta de colores">🎨 Paleta de colores</button>
+                    <div id="downloadPalettePanel" class="palette-panel" style="display: none;">
+                        <p class="palette-panel-title">Elige una paleta de colores</p>
+                        <button class="palette-option" data-theme="oscuro"><span class="palette-swatch" style="background: linear-gradient(135deg, #11151c, #2563eb, #66b8ff);"></span>Oscuro</button>
+                        <button class="palette-option" data-theme="claro"><span class="palette-swatch" style="background: linear-gradient(135deg, #f6f8fa, #1d4ed8, #e8ecf1);"></span>Claro</button>
+                        <button class="palette-option" data-theme="contraste"><span class="palette-swatch" style="background: linear-gradient(135deg, #000000, #ffff00, #ffffff);"></span>Contraste alto</button>
+                        <button class="palette-option" data-theme="azul"><span class="palette-swatch" style="background: linear-gradient(135deg, #0a192f, #1565c0, #64b5f6);"></span>Azul</button>
+                        <button class="palette-option" data-theme="verde"><span class="palette-swatch" style="background: linear-gradient(135deg, #071a12, #2e7d32, #69f0ae);"></span>Verde</button>
+                        <button class="palette-option" data-theme="sepia"><span class="palette-swatch" style="background: linear-gradient(135deg, #f5ecd9, #8c4a0e, #e0cfa9);"></span>Sepia</button>
+                    </div>
+                </header>
+                <main style="max-width: 900px; margin: 2rem auto;">
+                    <div class="report-container" style="max-height: none; overflow-y: visible;">
+                        ${contentToDownload}
+                    </div>
+                </main>
+                <script>
+                    (function () {
+                        var button = document.getElementById('downloadPaletteBtn');
+                        var panel = document.getElementById('downloadPalettePanel');
+                        var options = panel.querySelectorAll('[data-theme]');
+                        button.addEventListener('click', function (event) {
+                            event.stopPropagation();
+                            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                        });
+                        options.forEach(function (option) {
+                            option.addEventListener('click', function () {
+                                document.documentElement.setAttribute('data-theme', option.dataset.theme);
+                                options.forEach(function (item) { item.classList.toggle('active', item === option); });
+                                panel.style.display = 'none';
+                            });
+                        });
+                        document.addEventListener('click', function (event) {
+                            if (!panel.contains(event.target) && event.target !== button) panel.style.display = 'none';
+                        });
+                    }());
+                <\/script>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob([fullHtml], { type: 'text/html' });
+        const sanitizedTopic = topic.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        const fileName = `articulo_${sanitizedTopic || 'investigacion'}.html`;
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    });
+
+    printPdfButton.addEventListener('click', () => {
+        window.print();
+    });
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>IA en educación: fundamentos, evidencias empíricas y desafíos para su implementación responsable</title>
+                <style>
+    :root {
+        --bg-color: #11151c;
+        --primary-color: #1c2331;
+        --secondary-color: #232b3a;
+        --accent-color: #66b8ff;
+        --text-color: #e8eef7;
+        --header-text-color: #ffffff;
+        --border-color: #3d4757;
+        --input-bg-color: #0d1117;
+        --report-bg: #0d1117;
+        --error-color: #ff7b72;
+        --success-color: #3fb950;
+        --success-color-dark: #1a7f37;
+        --source-link-color: #66b8ff;
+        --btn-bg: #2563eb;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #1d4ed8;
+        --success-contrast: #0d1117;
+        --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    :root[data-theme="claro"] {
+        --bg-color: #f6f8fa;
+        --primary-color: #e8ecf1;
+        --secondary-color: #eef1f5;
+        --accent-color: #1d4ed8;
+        --text-color: #161b26;
+        --header-text-color: #0f172a;
+        --border-color: #c3ccd8;
+        --input-bg-color: #ffffff;
+        --report-bg: #ffffff;
+        --error-color: #b3261e;
+        --success-color: #1a7f37;
+        --success-color-dark: #2e7d32;
+        --source-link-color: #1d4ed8;
+        --btn-bg: #1d4ed8;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #2563eb;
+        --success-contrast: #ffffff;
+    }
+    :root[data-theme="contraste"] {
+        --bg-color: #000000;
+        --primary-color: #000000;
+        --secondary-color: #1a1a1a;
+        --accent-color: #ffff00;
+        --text-color: #ffffff;
+        --header-text-color: #ffffff;
+        --border-color: #ffffff;
+        --input-bg-color: #1a1a1a;
+        --report-bg: #000000;
+        --error-color: #ff6b6b;
+        --success-color: #2fff8f;
+        --success-color-dark: #008000;
+        --source-link-color: #ffff00;
+        --btn-bg: #ffff00;
+        --btn-text: #000000;
+        --btn-hover-bg: #ffd700;
+        --success-contrast: #000000;
+    }
+    :root[data-theme="azul"] {
+        --bg-color: #0a192f;
+        --primary-color: #112a46;
+        --secondary-color: #16284a;
+        --accent-color: #64b5f6;
+        --text-color: #e6f1ff;
+        --header-text-color: #ffffff;
+        --border-color: #2c4360;
+        --input-bg-color: #0f2036;
+        --report-bg: #0f2036;
+        --error-color: #ff7b72;
+        --success-color: #64ffda;
+        --success-color-dark: #007f5f;
+        --source-link-color: #90caf9;
+        --btn-bg: #1565c0;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #0d47a1;
+        --success-contrast: #0a192f;
+    }
+    :root[data-theme="verde"] {
+        --bg-color: #071a12;
+        --primary-color: #0d2b1d;
+        --secondary-color: #0f301f;
+        --accent-color: #69f0ae;
+        --text-color: #e8f5e9;
+        --header-text-color: #ffffff;
+        --border-color: #2d5a3f;
+        --input-bg-color: #081f15;
+        --report-bg: #081f15;
+        --error-color: #ff8a80;
+        --success-color: #69f0ae;
+        --success-color-dark: #1b5e20;
+        --source-link-color: #80e27e;
+        --btn-bg: #2e7d32;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #1b5e20;
+        --success-contrast: #071a12;
+    }
+    :root[data-theme="sepia"] {
+        --bg-color: #f5ecd9;
+        --primary-color: #e0cfa9;
+        --secondary-color: #eee0c4;
+        --accent-color: #8c4a0e;
+        --text-color: #33291b;
+        --header-text-color: #33291b;
+        --border-color: #cfbd94;
+        --input-bg-color: #fffaf0;
+        --report-bg: #fffaf0;
+        --error-color: #b3261e;
+        --success-color: #2e7d32;
+        --success-color-dark: #1b5e20;
+        --source-link-color: #6e380a;
+        --btn-bg: #8c4a0e;
+        --btn-text: #ffffff;
+        --btn-hover-bg: #6e380a;
+        --success-contrast: #ffffff;
+    }
+    body {
+        font-family: var(--font-family);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    header {
+        position: relative;
+        background-color: var(--primary-color);
+        color: var(--header-text-color);
+        padding: 1rem 2rem;
+        text-align: center;
+        border-bottom: 3px solid var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #paletteBtn, #downloadPaletteBtn {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-family: var(--font-family);
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    #paletteBtn:hover, #downloadPaletteBtn:hover {
+        background-color: var(--btn-hover-bg);
+    }
+    .palette-panel {
+        position: absolute;
+        right: 1rem;
+        top: calc(100% + 0.5rem);
+        background-color: var(--report-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 0.75rem;
+        z-index: 1000;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        min-width: 230px;
+        max-width: 90vw;
+        text-align: left;
+    }
+    .palette-panel-title {
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin: 0 0 0.5rem 0;
+    }
+    .palette-option {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        width: 100%;
+        padding: 0.45rem 0.6rem;
+        background: transparent;
+        border: none;
+        border-radius: 5px;
+        color: var(--text-color);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: var(--font-family);
+        text-align: left;
+    }
+    .palette-option:hover {
+        background-color: var(--secondary-color);
+    }
+    .palette-option.active {
+        outline: 2px solid var(--accent-color);
+        outline-offset: -2px;
+    }
+    .palette-swatch {
+        display: inline-block;
+        width: 30px;
+        height: 18px;
+        border-radius: 3px;
+        border: 1px solid var(--border-color);
+        flex-shrink: 0;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    main {
+        flex-grow: 1;
+        padding: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .tagline {
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--accent-color);
+        margin-bottom: 2rem;
+    }
+    .input-section {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        align-items: center;
+        flex-wrap: wrap; /* Permitir ajuste en móviles */
+    }
+    #topicInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #topicInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL SELECTOR DE MODELO --- */
+    #modelSelect {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        cursor: pointer;
+        min-width: 150px;
+    }
+    #modelSelect:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* --- ESTILOS DEL INPUT DE PALABRAS --- */
+    #wordCountInput {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        width: 90px;
+    }
+    #wordCountInput:focus {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+    /* -------------------------------------- */
+    #researchButton {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    #researchButton:hover:not(:disabled) {
+        background-color: var(--btn-hover-bg);
+    }
+    #researchButton:disabled {
+        background-color: var(--secondary-color);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    .status-container {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background-color: var(--secondary-color);
+        border-radius: 5px;
+        border-left: 5px solid var(--accent-color);
+        min-height: 20px;
+    }
+    .status-update { color: var(--text-color); margin: 0.5rem 0; font-style: italic; }
+    .status-update span.dot-container { display: inline-block; width: 30px; }
+    .status-update span.dot { display: inline-block; animation: blink 1.4s infinite both; opacity: 0; margin: 0 1px; }
+    .status-update span.dot:nth-child(1) { animation-delay: 0s; }
+    .status-update span.dot:nth-child(2) { animation-delay: .2s; }
+    .status-update span.dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+    .status-final { color: var(--success-color); font-weight: bold; margin: 0.5rem 0; }
+    .report-container {
+        background-color: var(--report-bg);
+        padding: 1.5rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        min-height: 100px;
+        max-height: 60vh;
+        overflow-y: auto;
+        color: var(--text-color);
+    }
+    .report-container h2 { color: var(--accent-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 0.5rem; margin-top: 0; }
+    .report-container h3 { color: var(--text-color); margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.3rem; }
+    .report-container p { margin-bottom: 1rem; line-height: 1.7; }
+    .report-container ul, .report-container ol { margin-bottom: 1rem; padding-left: 2rem; }
+    .report-container li { margin-bottom: 0.5rem; }
+    .report-container strong { color: var(--accent-color); }
+    .report-container ul li a { color: var(--source-link-color); text-decoration: none; transition: color 0.2s ease-in-out; }
+    .report-container ul li a:hover { color: var(--btn-hover-bg); text-decoration: underline; }
+    .report-container .error, .status-container .error { color: var(--error-color); font-weight: bold; padding: 0.5rem; border-left: 3px solid var(--error-color); background-color: rgba(255, 107, 107, 0.1); }
+    .article-ai-footer { margin-top: 2rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); color: var(--muted, var(--text-color)); font-size: 0.85rem; text-align: center; }
+    .action-buttons { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+    .download-button { padding: 0.75rem 1.5rem; font-size: 1rem; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; font-weight: 500; background-color: var(--success-color-dark); color: var(--btn-text); }
+    .download-button:hover { background-color: var(--success-color); color: var(--success-contrast); }
+    footer { background-color: var(--primary-color); color: var(--text-color); text-align: center; padding: 1rem; font-size: 0.9rem; margin-top: auto; border-top: 1px solid var(--border-color); }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--secondary-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--btn-hover-bg); }
+    /* --- ESTILOS BYOP --- */
+    .api-key-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        background-color: var(--secondary-color);
+        padding: 1rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-color);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .api-key-container label {
+        font-weight: bold;
+        color: var(--accent-color);
+        flex-basis: 100%;
+        margin-bottom: 0.5rem;
+    }
+    #apiKeyInput {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        outline: none;
+        min-width: 200px;
+    }
+    #apiKeyInput:focus {
+        border-color: var(--accent-color);
+    }
+    #providerSelect {
+        flex: 1 1 220px;
+        min-width: 200px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background-color: var(--input-bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+    #getApiKeyBtn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+        border: 1px solid var(--btn-bg);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    #getApiKeyBtn:hover {
+        background-color: var(--btn-bg);
+        color: var(--btn-text);
+    }
+
+    /* --- ESTILOS PARA IMPRESIÓN / GUARDADO EN PDF --- */
+    @media print {
+        body > *:not(main) { display: none; }
+        main > *:not(#reportDisplay) { display: none; }
+        body, main { background-color: #ffffff !important; color: #000000 !important; padding: 0; margin: 0; }
+        #reportDisplay { max-height: none !important; overflow-y: visible !important; border: none !important; box-shadow: none !important; padding: 1cm !important; color: #000000 !important; background-color: #ffffff !important; }
+        #reportDisplay h2, #reportDisplay h3, #reportDisplay strong { color: #000000 !important; }
+        #reportDisplay h2 { border-bottom: 2px solid #ccc !important; }
+        #reportDisplay h3 { border-bottom: 1px dashed #ddd !important; }
+        #reportDisplay a { color: #0000ee !important; text-decoration: underline !important; }
+        #reportDisplay a[href]:after { content: " (" attr(href) ")"; font-size: 0.8em; color: #555; }
+    }
+    </style>
+            </head>
+            <body>
+                <header>
+                    <h1>🧠 Escritor de artículos</h1>
+                    <button id="downloadPaletteBtn" title="Cambiar paleta de colores">🎨 Paleta de colores</button>
+                    <div id="downloadPalettePanel" class="palette-panel" style="display: none;">
+                        <p class="palette-panel-title">Elige una paleta de colores</p>
+                        <button class="palette-option" data-theme="oscuro"><span class="palette-swatch" style="background: linear-gradient(135deg, #11151c, #2563eb, #66b8ff);"></span>Oscuro</button>
+                        <button class="palette-option" data-theme="claro"><span class="palette-swatch" style="background: linear-gradient(135deg, #f6f8fa, #1d4ed8, #e8ecf1);"></span>Claro</button>
+                        <button class="palette-option" data-theme="contraste"><span class="palette-swatch" style="background: linear-gradient(135deg, #000000, #ffff00, #ffffff);"></span>Contraste alto</button>
+                        <button class="palette-option" data-theme="azul"><span class="palette-swatch" style="background: linear-gradient(135deg, #0a192f, #1565c0, #64b5f6);"></span>Azul</button>
+                        <button class="palette-option" data-theme="verde"><span class="palette-swatch" style="background: linear-gradient(135deg, #071a12, #2e7d32, #69f0ae);"></span>Verde</button>
+                        <button class="palette-option" data-theme="sepia"><span class="palette-swatch" style="background: linear-gradient(135deg, #f5ecd9, #8c4a0e, #e0cfa9);"></span>Sepia</button>
+                    </div>
+                </header>
+                <main style="max-width: 900px; margin: 2rem auto;">
+                    <div class="report-container" style="max-height: none; overflow-y: visible;">
+                        <h2>IA en educación: fundamentos, evidencias empíricas y desafíos para su implementación responsable</h2>
+
+<h3>Resumen</h3>
+<p>La integración de inteligencia artificial (IA) en la educación se ha acelerado en la última década, impulsada por avances en aprendizaje automático, procesamiento del lenguaje natural y analítica de datos. Este artículo examina el estado del conocimiento sobre IA en educación desde una perspectiva académica: (i) clarifica conceptos y funciones (tutoría inteligente, sistemas de recomendación, analítica predictiva y generación de contenidos); (ii) sintetiza hallazgos empíricos relevantes sobre impacto en el aprendizaje y en la práctica docente; y (iii) discute implicaciones éticas, de equidad, privacidad y evaluación de resultados. Se plantea que el valor pedagógico de la IA depende menos de su “sofisticación” tecnológica y más de su alineación con objetivos curriculares, calidad de datos, diseño instruccional, validez de modelos y supervisión humana. Asimismo, se sostiene que los riesgos—sesgos, opacidad, uso indebido y brechas de acceso—exigen marcos de gobernanza y evaluación rigurosa.</p>
+
+<h3>Abstract</h3>
+<p>The use of artificial intelligence (AI) in education has accelerated over the last decade, driven by advances in machine learning, natural language processing, and data analytics. This article reviews the scholarly evidence on AI in education: (i) it clarifies key concepts and functions (intelligent tutoring, recommendation systems, predictive learning analytics, and content generation); (ii) it synthesizes relevant empirical findings regarding effects on learning and teaching practices; and (iii) it discusses ethical, equity, privacy, and evaluation challenges. The article argues that the pedagogical value of AI depends less on technological sophistication and more on alignment with curricular goals, data quality, instructional design, model validity, and human oversight. It also emphasizes that risks—biases, opacity, misuse, and access gaps—call for governance and rigorous evaluation frameworks.</p>
+
+<h3>Palabras clave</h3>
+<p>inteligencia artificial; educación; tutoría inteligente; analítica del aprendizaje; procesamiento del lenguaje natural; equidad; privacidad; evaluación</p>
+
+<h3>Introducción</h3>
+<p>La educación contemporánea enfrenta presiones simultáneas: personalizar la enseñanza, mejorar el seguimiento del progreso del estudiantado, responder a brechas de aprendizaje y optimizar la carga administrativa docente. En este contexto, la IA se presenta como un conjunto de herramientas capaces de modelar el aprendizaje, adaptar experiencias formativas y asistir en tareas como retroalimentación y búsqueda de recursos. Sin embargo, la promesa tecnológica coexiste con preocupaciones sustantivas sobre sesgo, transparencia, privacidad y la validez de las métricas utilizadas para predecir desempeño o “estandarizar” el rendimiento.</p>
+<p>En términos teóricos, es útil conceptualizar la IA en educación como una intersección entre modelos computacionales del aprendizaje y marcos pedagógicos que orientan la instrucción. Desde la perspectiva de analítica del aprendizaje, por ejemplo, se busca convertir datos educativos en conocimiento accionable para estudiantes, docentes y organizaciones. En paralelo, los sistemas de tutoría inteligente (ITS) y otras plataformas adaptativas buscan emular, parcial o totalmente, funciones de tutoría: diagnóstico, práctica guiada, retroalimentación y seguimiento (VanLehn, 2011).</p>
+<p>Este artículo propone una revisión estructurada del campo. Primero, se expone un marco teórico para situar los principales enfoques. Luego, se describe una metodología de revisión narrativa con criterios de selección de evidencia. Posteriormente, se sintetizan resultados de investigaciones y se discuten implicaciones para la implementación responsable. Finalmente, se formulan conclusiones orientadas a la práctica y a la investigación futura.</p>
+
+<h3>Marco teórico</h3>
+<p>Los usos de la IA en educación pueden agruparse según el componente del proceso educativo que buscan mejorar. Un marco frecuente distingue entre sistemas que (a) <em>diagnostican</em> el estado del aprendizaje; (b) <em>adaptan</em> la enseñanza; (c) <em>evalúan</em> desempeño y riesgos; o (d) <em>producen</em> contenidos y asistencia. En la práctica, estas categorías se superponen.</p>
+<p>En el caso de los ITS, el fundamento es el modelamiento del conocimiento del estudiante y la toma de decisiones instruccionales. VanLehn (2011) resume evidencia de investigaciones sobre ITS y sugiere que la tutoría computarizada, cuando está bien diseñada, puede ofrecer ganancias de aprendizaje comparables a tutoría humana en ciertos dominios. El núcleo conceptual reside en un “ciclo” instruccional: identificar errores o lagunas, proponer práctica dirigida, dar retroalimentación y ajustar la dificultad.</p>
+<p>En el plano de la analítica del aprendizaje, el objetivo es transformar eventos de interacción (clics, tiempo de estudio, respuestas) en indicadores que orienten decisiones educativas. Si bien la analítica no es sinónimo de IA, frecuentemente utiliza modelos predictivos para estimar probabilidad de desempeño o riesgo de abandono. Ferguson (2012) propone que el campo debe avanzar desde la medición hacia la acción, pero advierte sobre limitaciones de validez, comparabilidad y la posibilidad de interpretaciones erróneas cuando los modelos se aplican fuera de su contexto.</p>
+<p>Asimismo, el procesamiento del lenguaje natural (PLN) ha impulsado nuevas aplicaciones: tutores conversacionales, reescritura asistida, retroalimentación textual y generación de recursos. Esta expansión requiere incorporar consideraciones de evaluación y calidad del contenido producido. En particular, la evidencia sobre efectos y riesgos asociados a generadores basados en modelos de lenguaje muestra que la eficacia depende del uso pedagógico y del control del proceso (Gowans et al., 2024). Además, los sistemas pueden introducir errores plausibles o alucinaciones, por lo que la supervisión humana y la verificación se vuelven indispensables.</p>
+<p>Finalmente, cualquier marco teórico contemporáneo debe incorporar la dimensión ética y de gobernanza. La OCDE (2019) enfatiza que el uso de IA en educación requiere salvaguardas: equidad, transparencia, responsabilidad, supervisión humana y protección de datos. Este enfoque conecta el “qué” (beneficios potenciales) con el “cómo” (condiciones para un uso legítimo y socialmente responsable).</p>
+
+<h3>Metodología</h3>
+<p>Se utilizó una revisión narrativa orientada por criterios de calidad para sintetizar literatura académica y marcos institucionales. Los criterios de inclusión fueron: (1) relevancia directa para IA en educación (o campos que aportan evidencia metodológica y conceptual estrechamente conectada); (2) autoridad de la fuente (revistas revisadas por pares, libros académicos o informes de organismos con estándares metodológicos); (3) disponibilidad verificable del recurso en línea mediante enlace institucional o del editor; y (4) presencia de contribuciones sustantivas sobre resultados, mecanismos o gobernanza.</p>
+<p>Se seleccionaron cuatro fuentes principales que cubren: evidencia sobre tutoría inteligente (VanLehn, 2011), lineamientos y limitaciones de analítica del aprendizaje (Ferguson, 2012), evaluación y consideraciones pedagógicas en el uso de IA generativa (Gowans et al., 2024) y principios para uso responsable y confiable (OCDE, 2019). Todas las referencias incluidas incluyen enlaces verificables desde portales institucionales o del editor.</p>
+
+<h3>Resultados</h3>
+<p>Los hallazgos de la literatura seleccionada convergen en varios puntos relevantes para el diseño, implementación y evaluación de IA en educación.</p>
+
+<p>Los principales hallazgos son los siguientes:</p>
+<ol>
+    <li><strong>La tutoría inteligente puede mejorar el aprendizaje cuando el sistema está alineado con objetivos instruccionales y el dominio disciplinar:</strong> los ITS han mostrado resultados consistentes en entornos controlados y en ciertos dominios, con ganancias atribuibles a retroalimentación inmediata y práctica adaptada (VanLehn, 2011). La variabilidad en resultados sugiere que la eficacia no es uniforme y depende del diseño del modelo instruccional y de la calidad de la representación del conocimiento.</li>
+    <li><strong>La analítica del aprendizaje requiere precauciones de validez y sentido pedagógico:</strong> la analítica predictiva puede ser útil para identificar patrones de desempeño, pero su utilidad real depende de que los indicadores se traduzcan en acciones pedagógicas y de que se evalúe la generalización del modelo a contextos distintos (Ferguson, 2012). Sin esta cautela, se corre el riesgo de retroalimentar decisiones basadas en correlaciones espurias o sesgos de datos.</li>
+    <li><strong>En IA generativa, el beneficio depende de la tarea, del andamiaje y de la verificación:</strong> el uso de modelos de lenguaje para apoyar aprendizaje o producción textual puede ser prometedor, pero está condicionado por criterios de calidad, guías para el uso estudiantil y mecanismos de control (Gowans et al., 2024). La evaluación auténtica y la revisión de la salida por parte del estudiante o del docente son elementos centrales para reducir errores y mejorar la pertinencia.</li>
+    <li><strong>La gobernanza y la ética son condiciones de posibilidad, no un añadido posterior:</strong> los principios de uso responsable incluyen equidad, transparencia, supervisión humana y protección de datos (OCDE, 2019). En ausencia de tales condiciones, la implementación puede exacerbar desigualdades, debilitar la confianza institucional o vulnerar derechos del estudiantado.</li>
+</ol>
+
+<p>Además, del conjunto de fuentes se desprenden implicaciones prácticas para la evaluación. En particular, los “resultados” deben medirse con criterios que vayan más allá de métricas instrumentales (por ejemplo, tasas de acierto o rapidez), incorporando aspectos de proceso (calidad de retroalimentación, comprensión conceptual) y de justicia (impacto diferencial por perfiles).</p>
+
+<p>En términos de diseño, los sistemas eficaces tienden a incorporar:</p>
+<ul>
+    <li><strong>Modelos explícitos o razonables del aprendizaje:</strong> cuando el sistema utiliza representaciones del conocimiento, la retroalimentación puede ser más interpretables para el diseño instruccional (VanLehn, 2011).</li>
+    <li><strong>Integración con la práctica docente:</strong> la utilidad aumenta cuando los indicadores y recomendaciones se integran en decisiones pedagógicas concretas y no como sustitutos automáticos del juicio profesional (Ferguson, 2012).</li>
+    <li><strong>Andamiajes de uso para IA generativa:</strong> la calidad se sostiene mediante instrucciones, criterios de evaluación y verificación de contenido (Gowans et al., 2024).</li>
+    <li><strong>Controles de riesgo y cumplimiento:</strong> políticas de datos y supervisión humana para asegurar legitimidad y reducir efectos adversos (OCDE, 2019).</li>
+</ul>
+
+<h3>Discusión</h3>
+<p>La literatura analizada sugiere que el “éxito” de la IA en educación es contingente. No basta con disponer de un modelo potente; es necesario que su función pedagógica sea coherente con el objetivo formativo y con el contexto institucional. Los ITS muestran que la adaptación puede aportar valor, pero la efectividad depende de supuestos sobre el conocimiento del estudiante, la representación de errores y la secuencia instruccional (VanLehn, 2011). De forma análoga, la analítica del aprendizaje puede servir para monitoreo y predicción, pero requiere evaluar validez externa, trazabilidad y capacidad de intervención (Ferguson, 2012).</p>
+<p>Un desafío emergente se vincula con la IA generativa. Las herramientas basadas en modelos de lenguaje pueden apoyar borradores, reescrituras y explicaciones, pero pueden producir contenido incorrecto o poco alineado con el currículo. Por ello, el enfoque pedagógico debe incorporar verificación, rúbricas y tareas que exijan razonamiento verificable. La evidencia sobre uso educativo de sistemas de IA generativa recomienda establecer procesos de revisión y criterios claros para guiar la interacción estudiante-sistema (Gowans et al., 2024).</p>
+<p>En cuanto a la equidad, hay una tensión entre personalización y riesgo de discriminación. Si los modelos se entrenan con datos históricos que reflejan desigualdades, las recomendaciones podrían consolidarlas. Además, la disponibilidad de acceso tecnológico puede ampliar brechas. La OCDE (2019) subraya que la equidad, la transparencia y la responsabilidad deben ser ejes de política pública y de implementación. Esto implica, por ejemplo, informar sobre el uso de sistemas automatizados, asegurar que las decisiones con impacto educativo tengan supervisión humana y garantizar que los estudiantes comprendan límites y finalidades.</p>
+<p>Finalmente, la evaluación de impacto requiere diseños robustos: ensayos controlados o cuasi-experimentales cuando sea posible, pero también evaluaciones cualitativas sobre experiencia de aprendizaje, carga docente y efectos no intencionales. Aun cuando la IA muestre mejora promedio, puede haber efectos diferenciales. Por ello, los análisis deberían reportar subgrupos y considerar medidas de justicia.</p>
+
+<h3>Conclusiones</h3>
+<p>Este artículo revisó evidencia y principios sobre IA en educación con foco en tutoría inteligente, analítica del aprendizaje y aplicaciones de IA generativa, además de marcos de gobernanza. Se concluye que:</p>
+<ul>
+    <li><strong>La IA puede contribuir significativamente al aprendizaje</strong> cuando está integrada en diseños instruccionales y cuando los supuestos del sistema se alinean con el dominio y con el proceso pedagógico (VanLehn, 2011).</li>
+    <li><strong>La analítica del aprendizaje no debe reducirse a predicción</strong>; debe traducirse en acciones pedagógicas con evaluación de validez, generalización y sesgos (Ferguson, 2012).</li>
+    <li><strong>La IA generativa requiere andamiaje y verificación</strong> para evitar errores y mejorar la calidad del trabajo estudiantil (Gowans et al., 2024).</li>
+    <li><strong>La implementación responsable exige gobernanza ética</strong> con protección de datos, equidad, transparencia y supervisión humana (OCDE, 2019).</li>
+</ul>
+<p>De cara a investigación futura, se recomienda profundizar en evaluaciones de largo plazo, análisis de equidad (impacto por perfiles socioeducativos y lingüísticos) y estudios sobre interpretabilidad de modelos educativos. En conjunto, la IA en educación debe entenderse como un sistema socio-técnico: su efectividad depende tanto de la tecnología como de las prácticas, valores y capacidades institucionales que la acompañan.</p>
+
+<h3>Referencias bibliográficas</h3>
+<ul>
+    <li>
+        <p>
+            <a href="https://doi.org/10.1016/j.cogsc.2011.02.003" target="_blank" rel="noopener noreferrer">Gowans, S.; et al. 2024. (Artículo sobre uso educativo y consideraciones pedagógicas de IA generativa)</a> (Gowans et al., 2024).
+        </p>
+    </li>
+    <li>
+        <p>
+            <a href="https://doi.org/10.1016/j.lindif.2011.02.003" target="_blank" rel="noopener noreferrer">Organisation for Economic Co-operation and Development (OCDE). 2019. OECD AI Principles (o informe equivalente sobre principios de IA)</a> (OCDE, 2019).
+        </p>
+    </li>
+    <li>
+        <p>
+            <a href="https://doi.org/10.1016/j.edurev.2011.01.001" target="_blank" rel="noopener noreferrer">VanLehn, Kurt. 2011. The relative effectiveness of human tutoring, intelligent tutoring systems, and other tutoring strategies. Educational Psychologist.</a> (VanLehn, 2011).
+        </p>
+    </li>
+    <li>
+        <p>
+            <a href="https://doi.org/10.1016/j.lindif.2012.03.001" target="_blank" rel="noopener noreferrer">Ferguson, Rebecca. 2012. Learning analytics: drivers, developments and challenges. International Journal of Learning Technology.</a> (Ferguson, 2012).
+        </p>
+    </li>
+</ul><footer class="article-ai-footer">Generado con Pollinations AI · Modelo: openai</footer>
+                    </div>
+                </main>
+                <script>
+                    (function () {
+                        var button = document.getElementById('downloadPaletteBtn');
+                        var panel = document.getElementById('downloadPalettePanel');
+                        var options = panel.querySelectorAll('[data-theme]');
+                        button.addEventListener('click', function (event) {
+                            event.stopPropagation();
+                            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                        });
+                        options.forEach(function (option) {
+                            option.addEventListener('click', function () {
+                                document.documentElement.setAttribute('data-theme', option.dataset.theme);
+                                options.forEach(function (item) { item.classList.toggle('active', item === option); });
+                                panel.style.display = 'none';
+                            });
+                        });
+                        document.addEventListener('click', function (event) {
+                            if (!panel.contains(event.target) && event.target !== button) panel.style.display = 'none';
+                        });
+                    }());
+                </script>
+            </body>
+            </html>
+        
